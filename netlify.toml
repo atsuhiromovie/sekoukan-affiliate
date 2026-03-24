@@ -1,0 +1,43 @@
+[build]
+  # Next.js SSG のビルドコマンド
+  command = "npm run build"
+
+  # SSG の出力先（next.config.js の output: 'export' に対応）
+  publish = "out"
+
+  # Node.js バージョン指定（Next.js 14 は 18 以上が必要）
+  environment = { NODE_VERSION = "20" }
+
+[build.environment]
+  # 環境変数はNetlifyダッシュボードの "Environment variables" で設定すること
+  # GOOGLE_SPREADSHEET_ID = "your_spreadsheet_id_here"
+  # GOOGLE_SHEETS_API_KEY  = "your_api_key_here"
+  # SITE_URL               = "https://your-domain.netlify.app"
+
+# SSG静的ファイルのキャッシュ設定（LCP最適化）
+[[headers]]
+  for = "/_next/static/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# リダイレクト設定（トレイリングスラッシュ）
+[[redirects]]
+  from = "/:pref"
+  to = "/:pref/"
+  status = 301
+
+[[redirects]]
+  from = "/:pref/:job_type"
+  to = "/:pref/:job_type/"
+  status = 301
+
+# ===== Build Hook 設定メモ =====
+# Netlifyダッシュボード → Site configuration → Build hooks で
+# "Google Sheets Trigger" という名前のBuild Hookを作成し、
+# 生成されたURLをGoogle Apps Scriptに設定してください。
+# 詳細: scripts/trigger-netlify.gs を参照

@@ -9,6 +9,7 @@ export interface PrefData {
   demandLevel: 'high' | 'medium' | 'low';
   majorCity: string;    // 例: "大津市"
   features: string[];   // 地域特性テキスト
+  trendKeywords: string[]; // 注目キーワード（2〜4個）
 }
 
 export interface JobTypeData {

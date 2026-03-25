@@ -182,6 +182,17 @@ export default async function PrefJobTypePage({
             {pref.name}の{jobType.fullName}市場の特徴
           </h2>
           <div className="bg-white border border-gray-200 rounded-xl p-6">
+            {/* 注目キーワード */}
+            <div className="mb-5">
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">注目キーワード</p>
+              <div className="flex flex-wrap gap-2">
+                {pref.trendKeywords.map((kw) => (
+                  <span key={kw} className="bg-blue-50 text-blue-700 border border-blue-200 text-xs font-medium px-3 py-1 rounded-full">
+                    {kw}
+                  </span>
+                ))}
+              </div>
+            </div>
             <ul className="space-y-3">
               {pref.features.map((feature, i) => (
                 <li key={i} className="flex items-start gap-3">

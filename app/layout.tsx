@@ -28,6 +28,7 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <head>
+        <meta name="google-site-verification" content="BtYm2wMpMxrnMWJ7aiZWK7GZYSIaPNKgBGFUdmUGrkQ" />
         {/* Google Fonts — display=swap でLCPに影響させない */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />

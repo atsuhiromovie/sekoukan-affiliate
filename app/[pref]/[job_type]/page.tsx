@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { PREFS, JOB_TYPES, getPrefById, getJobTypeById } from '../../../lib/constants';
+import { PREFS, JOB_TYPES, getPrefById, getJobTypeById, getLocalAdvice } from '../../../lib/constants';
 import {
   fetchAffiliatesFromSheets,
   fetchSalaryOverrides,
@@ -10,6 +10,7 @@ import {
   DEFAULT_AFFILIATES,
 } from '../../../lib/sheets';
 import ComparisonTable from '../../../components/ComparisonTable';
+import SalaryCalculator from '../../../components/SalaryCalculator';
 import FAQSection from '../../../components/FAQSection';
 import StructuredData from '../../../components/StructuredData';
 import { AffiliateItem } from '../../../lib/types';
@@ -36,8 +37,9 @@ export async function generateMetadata({
   if (!pref || !jobType) return {};
 
   const year = new Date().getFullYear();
-  const title = `${pref.name}の${jobType.fullName}求人・おすすめエージェント比較【${year}年最新】`;
-  const description = `${pref.name}で${jobType.fullName}の転職を成功させるための転職エージェント比較。${pref.name}の平均年収・求人の特徴・おすすめエージェントを徹底解説。`;
+  const baseAvgSalary = pref.avgSalary + jobType.avgSalary;
+  const title = `${pref.name}の${jobType.fullName}転職 | 年収${baseAvgSalary}万円〜の求人・エージェント比較【${year}年最新】`;
+  const description = `${pref.name}で${jobType.fullName}の転職を成功させるための転職エージェント比較。${pref.name}の平均年収は約${baseAvgSalary}万円〜。求人の特徴・おすすめエージェントを徹底解説。`;
 
   return {
     title,
@@ -154,6 +156,25 @@ export default async function PrefJobTypePage({
           prefName={pref.name}
           jobTypeName={jobType.fullName}
         />
+
+        {/* ===== 地域別アドバイス ===== */}
+        <section className="my-10">
+          <h2 className="text-2xl font-bold text-gray-800 mb-4 border-l-4 border-amber-500 pl-4">
+            {pref.name}で{jobType.fullName}への転職を成功させるアドバイス
+          </h2>
+          <div className="bg-amber-50 border border-amber-200 rounded-xl p-6">
+            <p className="text-gray-700 leading-relaxed">{getLocalAdvice(jobType.id, pref.id)}</p>
+          </div>
+        </section>
+
+        {/* ===== 年収アップ診断 ===== */}
+        <section className="my-10">
+          <SalaryCalculator
+            defaultPrefId={pref.id}
+            defaultJobTypeId={jobType.id}
+            avgSalary={avgSalary}
+          />
+        </section>
 
         {/* 地域特性コンテンツ */}
         <section className="my-10">

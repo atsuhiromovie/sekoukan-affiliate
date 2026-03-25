@@ -83,6 +83,13 @@ export default function RootLayout({
               >
                 運営者情報
               </a>
+              <a
+                href="/contact/"
+                className="underline hover:opacity-80 transition-opacity"
+                style={{ color: 'rgba(255,255,255,0.55)' }}
+              >
+                お問い合わせ
+              </a>
             </nav>
             <p className="text-xs" style={{ color: 'rgba(255,255,255,0.35)' }}>
               © {new Date().getFullYear()} 施工管理転職ナビ

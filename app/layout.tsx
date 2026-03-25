@@ -61,6 +61,14 @@ export default function RootLayout({
             <p className="mb-4">
               掲載情報は編集部調査時点のものです。最新情報は各社公式サイトでご確認ください。
             </p>
+            <nav className="flex gap-4 mb-4 text-xs">
+              <a href="/privacy/" className="text-gray-400 hover:text-gray-200 underline">
+                プライバシーポリシー
+              </a>
+              <a href="/company/" className="text-gray-400 hover:text-gray-200 underline">
+                運営者情報
+              </a>
+            </nav>
             <p className="text-xs text-gray-500">
               © {new Date().getFullYear()} 施工管理転職ナビ
             </p>

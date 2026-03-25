@@ -29,23 +29,30 @@ export default function RootLayout({
     <html lang="ja">
       <head>
         <meta name="google-site-verification" content="BtYm2wMpMxrnMWJ7aiZWK7GZYSIaPNKgBGFUdmUGrkQ" />
-        {/* Google Fonts — display=swap でLCPに影響させない */}
+        {/* Google Fonts */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Oswald:wght@400;500;600;700&display=swap"
           rel="stylesheet"
         />
       </head>
       <body className="font-sans bg-gray-50 text-gray-900 antialiased">
         {/* グローバルヘッダー */}
-        <header className="bg-blue-800 text-white py-3 px-4 shadow-md">
+        <header style={{ backgroundColor: '#1a2744' }} className="text-white py-3 px-4 shadow-lg">
           <div className="max-w-5xl mx-auto flex items-center justify-between">
-            <a href="/" className="font-bold text-lg tracking-tight">
-              🏗️ 施工管理転職ナビ
+            <a href="/" className="flex items-center gap-2">
+              <span className="font-bold text-xl tracking-tight">
+                施工管理
+                <span style={{ color: '#f59e0b' }}>転職</span>
+                ナビ
+              </span>
             </a>
-            <span className="text-blue-200 text-xs hidden sm:block">
-              施工管理技士のための転職情報サイト
+            <span
+              className="text-xs hidden sm:block tracking-widest font-display"
+              style={{ color: 'rgba(255,255,255,0.45)', fontFamily: 'Oswald, sans-serif', letterSpacing: '0.12em' }}
+            >
+              CONSTRUCTION CAREER NAV
             </span>
           </div>
         </header>
@@ -53,8 +60,8 @@ export default function RootLayout({
         <main className="min-h-screen">{children}</main>
 
         {/* グローバルフッター */}
-        <footer className="bg-gray-800 text-gray-400 py-8 mt-16">
-          <div className="max-w-5xl mx-auto px-4 text-sm">
+        <footer style={{ backgroundColor: '#1a2744' }} className="py-8 mt-16">
+          <div className="max-w-5xl mx-auto px-4 text-sm" style={{ color: 'rgba(255,255,255,0.55)' }}>
             <p className="mb-2">
               ※ 本サイトにはアフィリエイト広告が含まれています。
             </p>
@@ -62,14 +69,22 @@ export default function RootLayout({
               掲載情報は編集部調査時点のものです。最新情報は各社公式サイトでご確認ください。
             </p>
             <nav className="flex gap-4 mb-4 text-xs">
-              <a href="/privacy/" className="text-gray-400 hover:text-gray-200 underline">
+              <a
+                href="/privacy/"
+                className="underline hover:opacity-80 transition-opacity"
+                style={{ color: 'rgba(255,255,255,0.55)' }}
+              >
                 プライバシーポリシー
               </a>
-              <a href="/company/" className="text-gray-400 hover:text-gray-200 underline">
+              <a
+                href="/company/"
+                className="underline hover:opacity-80 transition-opacity"
+                style={{ color: 'rgba(255,255,255,0.55)' }}
+              >
                 運営者情報
               </a>
             </nav>
-            <p className="text-xs text-gray-500">
+            <p className="text-xs" style={{ color: 'rgba(255,255,255,0.35)' }}>
               © {new Date().getFullYear()} 施工管理転職ナビ
             </p>
           </div>

@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Metadata } from 'next';
 import { PREFS, JOB_TYPES } from '../lib/constants';
+import PrefJobSelector from '../components/PrefJobSelector';
 
 export const metadata: Metadata = {
   title: '施工管理転職ナビ | 47都道府県×5工種別おすすめエージェント比較',
@@ -21,10 +22,12 @@ export default function HomePage() {
       <h1 className="text-3xl font-bold text-gray-900 mb-4">
         施工管理転職ナビ
       </h1>
-      <p className="text-gray-600 leading-relaxed mb-10">
+      <p className="text-gray-600 leading-relaxed mb-6">
         施工管理技士（建築・土木・電気工事・管工事・造園）の転職を成功させるための専門情報サイトです。
         お住まいの都道府県と工種を選んで、最適な転職エージェントを見つけてください。
       </p>
+
+      <PrefJobSelector />
 
       {/* 地域別都道府県一覧 */}
       {prefsByRegion.map(({ region, prefs }) => (

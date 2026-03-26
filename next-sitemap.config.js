@@ -1,6 +1,6 @@
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
-  siteUrl: process.env.SITE_URL || 'https://sekoukan-agent.netlify.app',
+  siteUrl: process.env.SITE_URL || 'https://sekoukan-navi.netlify.app'
 
   // サイトマップファイルの出力先（SSGのoutputディレクトリ）
   outDir: 'out',
@@ -21,7 +21,7 @@ module.exports = {
       },
     ],
     additionalSitemaps: [
-      `${process.env.SITE_URL || 'https://sekoukan-agent.netlify.app'}/sitemap.xml`,
+      `${process.env.SITE_URL || 'https://sekoukan-navi.netlify.app'
     ],
   },
 

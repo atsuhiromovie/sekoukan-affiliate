@@ -99,7 +99,7 @@ export default async function ArticleDetailPage({
 
       {/* 本文（Markdownレンダリング） */}
       <article className="prose prose-sm sm:prose max-w-none prose-headings:text-[#1a2744] prose-a:text-[#f59e0b] prose-strong:text-[#1a2744]">
-        <ReactMarkdown>{article.body}</ReactMarkdown>
+        <ReactMarkdown>{article.body.replace(/\n{1}(?!\n)/g, '\n\n')}</ReactMarkdown>
       </article>
 
       {/* CTA */}

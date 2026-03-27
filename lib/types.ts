@@ -39,6 +39,20 @@ export interface FAQItem {
   answer: string;
 }
 
+export interface Article {
+  id: string;
+  slug: string;
+  title: string;
+  description: string;
+  category: string;
+  jobType: string;
+  pref: string;
+  body: string;
+  heroImage: string;
+  publishedAt: string;
+  status: string;
+}
+
 export interface PageData {
   pref: PrefData;
   jobType: JobTypeData;

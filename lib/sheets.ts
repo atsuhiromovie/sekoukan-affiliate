@@ -6,7 +6,7 @@
  * シート構造の変更時はカラムマッピングの更新が必要
  */
 
-import { AffiliateItem, FAQItem, PrefData } from './types';
+import { AffiliateItem, Article, FAQItem, PrefData } from './types';
 import { PREFS, JOB_TYPES, getPrefById, getJobTypeById } from './constants';
 
 // ===== 環境変数チェック =====
@@ -207,4 +207,46 @@ export function generateDefaultFAQs(
       answer: `${prefName}での${jobTypeName}転職エージェント選びのポイントは①建設・施工管理に特化していること②${prefName}の地域求人に強いこと③非公開求人の保有数が多いこと④転職後の年収アップ実績があること、の4点です。複数のエージェントに登録して比較することをおすすめします。`,
     },
   ];
+}
+
+/**
+ * 記事一覧をスプレッドシートから取得
+ * シート名: "articles"
+ * カラム順: id | slug | title | description | category | jobType | pref | body | heroImage | publishedAt | status
+ */
+export async function fetchArticles(): Promise<Article[]> {
+  if (USE_LOCAL_FALLBACK) {
+    return [];
+  }
+
+  try {
+    const range = encodeURIComponent('articles!A2:K500');
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${range}?key=${API_KEY}`;
+
+    const res = await fetch(url, { next: { revalidate: false } });
+    if (!res.ok) throw new Error(`Sheets API error: ${res.status}`);
+
+    const json = await res.json();
+    const rows: string[][] = json.values || [];
+
+    return rows
+      .filter((row) => row[0] && row[1] && row[2]) // id, slug, title が必須
+      .map((row) => ({
+        id: row[0] || '',
+        slug: row[1] || '',
+        title: row[2] || '',
+        description: row[3] || '',
+        category: row[4] || '',
+        jobType: row[5] || '',
+        pref: row[6] || '',
+        body: row[7] || '',
+        heroImage: row[8] || '',
+        publishedAt: row[9] || '',
+        status: row[10] || '',
+      }))
+      .filter((article) => article.status === 'published');
+  } catch (err) {
+    console.error('[Sheets] articles取得エラー:', err);
+    return [];
+  }
 }

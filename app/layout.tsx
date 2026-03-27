@@ -48,12 +48,21 @@ export default function RootLayout({
                 ナビ
               </span>
             </a>
-            <span
-              className="text-xs hidden sm:block tracking-widest font-display"
-              style={{ color: 'rgba(255,255,255,0.45)', fontFamily: 'Oswald, sans-serif', letterSpacing: '0.12em' }}
-            >
-              CONSTRUCTION CAREER NAV
-            </span>
+            <div className="flex items-center gap-5">
+              <a
+                href="/articles/"
+                className="text-sm font-medium transition-colors hover:opacity-80 hidden sm:block"
+                style={{ color: 'rgba(255,255,255,0.85)', letterSpacing: '0.03em' }}
+              >
+                転職コラム
+              </a>
+              <span
+                className="text-xs hidden md:block tracking-widest"
+                style={{ color: 'rgba(255,255,255,0.45)', fontFamily: 'Oswald, sans-serif', letterSpacing: '0.12em' }}
+              >
+                CONSTRUCTION CAREER NAV
+              </span>
+            </div>
           </div>
         </header>
 

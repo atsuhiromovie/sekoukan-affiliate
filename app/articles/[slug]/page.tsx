@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation';
 import ReactMarkdown from 'react-markdown';
 import type { Components } from 'react-markdown';
 import { fetchArticles } from '../../../lib/sheets';
+import ArticleImage from './ArticleImage';
 
 // ===== カテゴリ別カラー（heroImage代替） =====
 const CATEGORY_COLORS: Record<string, string> = {
@@ -176,17 +177,11 @@ export default async function ArticleDetailPage({
       {/* ヒーロー画像 */}
       <div className="mb-8 rounded-xl overflow-hidden">
         {article.heroImage ? (
-          <div className="relative w-full" style={{ aspectRatio: '1200 / 630' }}>
-            <Image
-              src={article.heroImage}
-              alt={article.title}
-              width={1200}
-              height={630}
-              className="w-full h-full object-cover"
-              priority
-              onError={() => {/* フォールバックはCSSで対応 */}}
-            />
-          </div>
+          <ArticleImage
+            src={article.heroImage}
+            alt={article.title}
+            fallbackColor={fallbackColor}
+          />
         ) : (
           <div
             className="w-full flex items-center justify-center"

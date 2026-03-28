@@ -60,30 +60,49 @@ const mdComponents: Components = {
     <li style={{ marginBottom: '0.5rem', lineHeight: '1.8' }}>{children}</li>
   ),
   table: ({ children }) => (
-    <table
-      style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '1.5rem' }}
-    >
-      {children}
-    </table>
+    <div style={{ overflowX: 'auto', marginBottom: '1.5rem' }}>
+      <table
+        style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.95rem' }}
+      >
+        {children}
+      </table>
+    </div>
   ),
   th: ({ children }) => (
     <th
       style={{
-        border: '1px solid #e2e8f0',
-        padding: '0.5rem',
+        backgroundColor: '#1a2744',
+        color: '#ffffff',
+        padding: '0.75rem 1rem',
         textAlign: 'left',
-        backgroundColor: '#f8fafc',
-        fontWeight: 'bold',
+        fontWeight: 600,
       }}
     >
       {children}
     </th>
   ),
   td: ({ children }) => (
-    <td style={{ border: '1px solid #e2e8f0', padding: '0.5rem', textAlign: 'left' }}>
+    <td
+      style={{
+        padding: '0.75rem 1rem',
+        borderBottom: '1px solid #e2e8f0',
+        verticalAlign: 'top',
+      }}
+    >
       {children}
     </td>
   ),
+  tr: ({ children, ...props }) => {
+    // 偶数行に背景色
+    const node = (props as { node?: { position?: { start?: { line?: number } } } }).node;
+    const lineIndex = node?.position?.start?.line ?? 0;
+    const isEven = lineIndex % 2 === 0;
+    return (
+      <tr style={isEven ? { backgroundColor: '#f8fafc' } : {}}>
+        {children}
+      </tr>
+    );
+  },
 };
 
 // ===== SSG: 全公開記事のslugを事前生成 =====

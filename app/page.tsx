@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { Metadata } from 'next';
-import { PREFS, JOB_TYPES } from '../lib/constants';
+import { PREFS, JOB_TYPES, ARTICLE_CATEGORIES } from '../lib/constants';
 import PrefJobSelector from '../components/PrefJobSelector';
 import { fetchAffiliatesFromSheets, fetchArticles } from '../lib/sheets';
 
@@ -350,7 +350,7 @@ export default async function HomePage() {
                       className="text-xs mb-2"
                       style={{ color: '#f59e0b', letterSpacing: '0.05em' }}
                     >
-                      {article.category}
+                      {ARTICLE_CATEGORIES[article.category] ?? article.category}
                     </div>
                     <div className="text-sm leading-snug" style={{ color: '#c8d8e4' }}>
                       {article.title}

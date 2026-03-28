@@ -6,15 +6,16 @@ import ReactMarkdown from 'react-markdown';
 import type { Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { fetchArticles } from '../../../lib/sheets';
+import { ARTICLE_CATEGORIES } from '../../../lib/constants';
 import ArticleImage from './ArticleImage';
 
-// ===== カテゴリ別カラー（heroImage代替） =====
+// ===== カテゴリ別カラー（heroImage代替）※英語ID対応 =====
 const CATEGORY_COLORS: Record<string, string> = {
-  転職ノウハウ: '#1a2744',
-  資格情報: '#1e3a5f',
-  地域情報: '#234068',
-  企業研究: '#1a3050',
-  年収情報: '#162238',
+  career:        '#1a2744',
+  salary:        '#162238',
+  qualification: '#1e3a5f',
+  work:          '#234068',
+  region:        '#1a3050',
 };
 
 // ===== Markdownコンポーネント定義 =====
@@ -177,7 +178,7 @@ export default async function ArticleDetailPage({
             className="inline-block text-xs font-semibold px-2.5 py-1 rounded mb-3"
             style={{ backgroundColor: '#f59e0b', color: '#1a2744' }}
           >
-            {article.category}
+            {ARTICLE_CATEGORIES[article.category] ?? article.category}
           </span>
         )}
         <h1

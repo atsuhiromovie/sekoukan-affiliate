@@ -147,3 +147,12 @@ export function getLocalAdvice(jobTypeId: string, prefId: string): string {
   if (!templates) return '';
   return templates[getAdvicePattern(prefId)];
 }
+
+// ===== 記事カテゴリ 英語ID → 日本語 =====
+export const ARTICLE_CATEGORIES: Record<string, string> = {
+  career:        '転職・キャリア',
+  salary:        '給与・年収',
+  qualification: '資格',
+  work:          '仕事内容',
+  region:        '地域特化',
+};

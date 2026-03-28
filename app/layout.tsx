@@ -28,13 +28,24 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <head>
-        <meta name="google-site-verification" content="S3gMdx_YVuSq1yrM_vcbxsMvu" />
         {/* Google Fonts */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
           href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Oswald:wght@400;500;600;700&display=swap"
           rel="stylesheet"
+        />
+        {/* GA4 */}
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-SCGYMN91JK" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-SCGYMN91JK');
+            `,
+          }}
         />
       </head>
       <body className="font-sans bg-gray-50 text-gray-900 antialiased">

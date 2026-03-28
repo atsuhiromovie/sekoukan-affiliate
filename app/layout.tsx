@@ -30,6 +30,7 @@ export default function RootLayout({
       <head>
         <meta name="google-site-verification" content="BtYm2wMpMxrnMWJ7aiZWK7GZYSIaPNKgBGFUdmUGrkQ" />
         <meta name="google-site-verification" content="S3gMdx_YVuSq1yrM_vcbxsMvu" />
+        <meta name="google-site-verification" content="BtYm2wMpMxrnMWJ7aiZWK7GZYSlaPNKgBGFUdmUGrkQ" />
         {/* Google Fonts */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />

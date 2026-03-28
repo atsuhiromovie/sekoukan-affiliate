@@ -29,6 +29,7 @@ export default function RootLayout({
     <html lang="ja">
       <head>
         <meta name="google-site-verification" content="BtYm2wMpMxrnMWJ7aiZWK7GZYSIaPNKgBGFUdmUGrkQ" />
+        <meta name="google-site-verification" content="S3gMdx_YVuSq1yrM_vcbxsMvu" />
         {/* Google Fonts */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />

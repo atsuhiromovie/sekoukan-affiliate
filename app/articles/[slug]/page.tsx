@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import ReactMarkdown from 'react-markdown';
 import type { Components } from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { fetchArticles } from '../../../lib/sheets';
 import ArticleImage from './ArticleImage';
 
@@ -216,8 +217,14 @@ export default async function ArticleDetailPage({
 
       {/* 本文（Markdownレンダリング） */}
       <article style={{ fontSize: '1.0625rem' }}>
-        <ReactMarkdown components={mdComponents}>
-          {article.body.replace(/\n{1}(?!\n)/g, '\n\n')}
+        <ReactMarkdown components={mdComponents} remarkPlugins={[remarkGfm]}>
+          {article.body
+            // テーブル行の前後に必ず空行を補完（Markdownブロックとして認識させる）
+            .replace(/([^\n])\n(\|)/g, '$1\n\n$2')
+            .replace(/(\|[^\n]*)\n([^|\n])/g, '$1\n\n$2')
+            // 単独改行を段落区切りに変換（既に\n\nの箇所はスキップ）
+            .replace(/\n{1}(?!\n)/g, '\n\n')
+          }
         </ReactMarkdown>
       </article>
 

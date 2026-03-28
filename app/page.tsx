@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { Metadata } from 'next';
 import { PREFS, JOB_TYPES, ARTICLE_CATEGORIES } from '../lib/constants';
 import PrefJobSelector from '../components/PrefJobSelector';
@@ -334,17 +335,29 @@ export default async function HomePage() {
                     textDecoration: 'none',
                   }}
                 >
-                  <div
-                    className="flex items-center justify-center text-xs"
-                    style={{
-                      height: '80px',
-                      backgroundColor: '#1a3a5c',
-                      color: '#3a6080',
-                      letterSpacing: '0.1em',
-                    }}
-                  >
-                    ARTICLE
-                  </div>
+                  {article.heroImage ? (
+                    <div className="relative overflow-hidden" style={{ height: '80px' }}>
+                      <Image
+                        src={article.heroImage}
+                        alt={article.title}
+                        width={400}
+                        height={80}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  ) : (
+                    <div
+                      className="flex items-center justify-center text-xs"
+                      style={{
+                        height: '80px',
+                        backgroundColor: '#1a3a5c',
+                        color: '#3a6080',
+                        letterSpacing: '0.1em',
+                      }}
+                    >
+                      ARTICLE
+                    </div>
+                  )}
                   <div className="p-4">
                     <div
                       className="text-xs mb-2"

@@ -218,13 +218,48 @@ export default async function ArticleDetailPage({
       {/* 本文（Markdownレンダリング） */}
       <article style={{ fontSize: '1.0625rem' }}>
         <ReactMarkdown components={mdComponents} remarkPlugins={[remarkGfm]}>
-          {article.body
-            // テーブル行の前後に必ず空行を補完（Markdownブロックとして認識させる）
-            .replace(/([^\n])\n(\|)/g, '$1\n\n$2')
-            .replace(/(\|[^\n]*)\n([^|\n])/g, '$1\n\n$2')
-            // 単独改行を段落区切りに変換（既に\n\nの箇所はスキップ）
-            .replace(/\n{1}(?!\n)/g, '\n\n')
-          }
+          {(() => {
+            // 行単位でテーブルブロックを検出し、適切に改行補完する
+            const lines = article.body.split('\n');
+            const result: string[] = [];
+
+            for (let i = 0; i < lines.length; i++) {
+              const line = lines[i];
+              const isTableLine = line.trimStart().startsWith('|');
+              const prevIsTable = i > 0 && lines[i - 1].trimStart().startsWith('|');
+              const nextIsTable = i < lines.length - 1 && lines[i + 1].trimStart().startsWith('|');
+
+              if (isTableLine) {
+                // テーブルブロック開始前に空行を補完
+                if (!prevIsTable && result.length > 0) {
+                  const last = result[result.length - 1];
+                  if (last !== '') result.push('');
+                }
+                result.push(line);
+                // テーブルブロック終了後に空行を補完
+                if (!nextIsTable) {
+                  result.push('');
+                }
+              } else {
+                // 非テーブル行：空行でなければ段落として扱う
+                if (line === '') {
+                  result.push('');
+                } else {
+                  // 前の行が空でなく、前の行もテーブルでなければ空行を補完
+                  if (result.length > 0 && result[result.length - 1] !== '' && !prevIsTable) {
+                    result.push('');
+                  }
+                  result.push(line);
+                }
+              }
+            }
+
+            const processed = result.join('\n');
+            if (process.env.NODE_ENV === 'development') {
+              console.log('[ArticleBody processed]:\n', processed);
+            }
+            return processed;
+          })()}
         </ReactMarkdown>
       </article>
 

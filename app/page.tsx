@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { Metadata } from 'next';
 import { PREFS, JOB_TYPES } from '../lib/constants';
 import PrefJobSelector from '../components/PrefJobSelector';
-import { fetchAffiliatesFromSheets } from '../lib/sheets';
+import { fetchAffiliatesFromSheets, fetchArticles } from '../lib/sheets';
 
 export const metadata: Metadata = {
   title: '施工管理転職ナビ | 47都道府県×5工種別おすすめエージェント比較',
@@ -42,24 +42,6 @@ const SITE_FEATURES = [
   },
 ];
 
-// 掲載記事（後でスプレッドシートから動的取得に切り替え可）
-const FEATURED_ARTICLES = [
-  {
-    slug: 'sekoukan-yametai',
-    category: '転職・キャリア',
-    title: '施工管理をやめたいと思ったら読む｜転職前に整理すること',
-  },
-  {
-    slug: 'sekoukan-nenshu-heikin',
-    category: '給与・年収',
-    title: '施工管理の平均年収は本当に高いか｜データで検証',
-  },
-  {
-    slug: 'sekoukan-kitsui-riyuu',
-    category: '仕事内容',
-    title: '施工管理がきつい理由と続けるか辞めるかの判断基準',
-  },
-];
 
 function SectionHead({ en, ja }: { en: string; ja: string }) {
   return (
@@ -83,8 +65,15 @@ function SectionHead({ en, ja }: { en: string; ja: string }) {
 }
 
 export default async function HomePage() {
-  const allItems = await fetchAffiliatesFromSheets();
+  const [allItems, allArticles] = await Promise.all([
+    fetchAffiliatesFromSheets(),
+    fetchArticles(),
+  ]);
   const recommended = allItems.filter((item) => item.isRecommended).slice(0, 3);
+  const featuredArticles = allArticles
+    .filter((a) => a.status === 'published')
+    .sort((a, b) => (b.publishedAt ?? '').localeCompare(a.publishedAt ?? ''))
+    .slice(0, 3);
 
   const prefsByRegion = REGIONS.map((region) => ({
     region,
@@ -334,7 +323,7 @@ export default async function HomePage() {
           <section className="pb-10">
             <SectionHead en="COLUMN" ja="転職コラム" />
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              {FEATURED_ARTICLES.map((article) => (
+              {featuredArticles.map((article) => (
                 <Link
                   key={article.slug}
                   href={`/articles/${article.slug}/`}

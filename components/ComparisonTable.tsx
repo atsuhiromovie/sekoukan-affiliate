@@ -73,7 +73,7 @@ export default function ComparisonTable({ affiliates, prefName, jobTypeName }: P
                   {item.regions.includes('all') ? '全国対応' : `${prefName}対応`}
                 </td>
                 <td className="p-3 text-center font-bold text-blue-700">
-                  {item.minSalaryUp ? `+${item.minSalaryUp}万円〜` : '実績多数'}
+                  実績多数
                 </td>
                 <td className="p-3 text-center">
                   <a
@@ -133,11 +133,6 @@ function MobileCard({
             </span>
           )}
         </div>
-        {item.minSalaryUp && (
-          <span className="text-sm font-bold text-blue-700 bg-blue-50 px-2 py-1 rounded">
-            +{item.minSalaryUp}万円〜
-          </span>
-        )}
       </div>
       <p className="text-sm text-gray-600 mb-3">{item.tagline}</p>
       <ul className="space-y-1.5 mb-4">

@@ -52,7 +52,7 @@ export default function ComparisonTable({ affiliates, prefName, jobTypeName }: P
                 </td>
                 <td className="p-3">
                   <div className="font-bold text-base text-gray-900">{item.name}</div>
-                  {item.badge && (
+                  {item.badge && !/^\d+$/.test(item.badge) && (
                     <span className="inline-block mt-1 px-2 py-0.5 bg-amber-400 text-amber-900 text-xs font-bold rounded">
                       {item.badge}
                     </span>
@@ -127,7 +127,7 @@ function MobileCard({
         <div>
           <span className="text-2xl mr-2">{rankEmoji}</span>
           <span className="font-bold text-lg text-gray-900">{item.name}</span>
-          {item.badge && (
+          {item.badge && !/^\d+$/.test(item.badge) && (
             <span className="ml-2 inline-block px-2 py-0.5 bg-amber-400 text-amber-900 text-xs font-bold rounded">
               {item.badge}
             </span>

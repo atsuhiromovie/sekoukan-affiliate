@@ -220,7 +220,7 @@ export default async function HomePage() {
                       textDecoration: 'none',
                     }}
                   >
-                    {item.badge && (
+                    {item.badge && !/^\d+$/.test(item.badge) && (
                       <span
                         className="inline-block self-start text-xs font-bold px-2 py-0.5 rounded mb-3"
                         style={{ backgroundColor: '#f59e0b', color: '#1a2744' }}

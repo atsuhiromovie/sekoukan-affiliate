@@ -33,6 +33,38 @@ export async function generateMetadata({
   };
 }
 
+// ===== 求人需要バッジ =====
+function DemandBadge({ level }: { level: 'high' | 'medium' | 'low' }) {
+  if (level === 'high') {
+    return (
+      <span
+        className="inline-block text-xs font-bold px-2.5 py-1 rounded-full text-white"
+        style={{ backgroundColor: '#dc2626' }}
+      >
+        求人多数
+      </span>
+    );
+  }
+  if (level === 'medium') {
+    return (
+      <span
+        className="inline-block text-xs font-bold px-2.5 py-1 rounded-full"
+        style={{ backgroundColor: '#f59e0b', color: '#1a2744' }}
+      >
+        標準
+      </span>
+    );
+  }
+  return (
+    <span
+      className="inline-block text-xs font-bold px-2.5 py-1 rounded-full text-white"
+      style={{ backgroundColor: '#6b7280' }}
+    >
+      少なめ
+    </span>
+  );
+}
+
 // ===== 都道府県TOPページ =====
 export default function PrefTopPage({ params }: { params: { pref: string } }) {
   const pref = getPrefById(params.pref);
@@ -51,6 +83,31 @@ export default function PrefTopPage({ params }: { params: { pref: string } }) {
       <h1 className="text-3xl font-bold text-gray-900 mb-4">
         {pref.name}の施工管理転職おすすめエージェント
       </h1>
+
+      {/* ③ trendKeywordsバッジ（H1直下・リード文の前） */}
+      {pref.trendKeywords && pref.trendKeywords.length > 0 && (
+        <div className="mb-4">
+          <p className="text-xs font-bold mb-2" style={{ color: '#1a2744' }}>
+            注目キーワード
+          </p>
+          <div className="flex gap-2 overflow-x-auto pb-1">
+            {pref.trendKeywords.map((kw, i) => (
+              <span
+                key={i}
+                className="shrink-0 text-xs px-3 py-1 rounded-full border font-medium"
+                style={{
+                  backgroundColor: '#f0f4f8',
+                  borderColor: '#1a2744',
+                  color: '#1a2744',
+                }}
+              >
+                {kw}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
       <p className="text-gray-600 mb-8 leading-relaxed">
         {pref.name}で施工管理の転職を検討中の方へ。建築・土木・電気工事・管工事・造園の5工種別に、
         {pref.name}の求人に強い転職エージェントと平均年収データをまとめました。
@@ -79,15 +136,10 @@ export default function PrefTopPage({ params }: { params: { pref: string } }) {
             <span className="text-gray-500">主要都市</span>
             <span className="font-bold text-gray-700 ml-2">{pref.majorCity}</span>
           </div>
-          <div className="bg-white rounded-lg px-4 py-2 border border-blue-100">
+          {/* ① 求人需要バッジ */}
+          <div className="bg-white rounded-lg px-4 py-2 border border-blue-100 flex items-center gap-2">
             <span className="text-gray-500">求人需要</span>
-            <span className={`font-bold ml-2 ${
-              pref.demandLevel === 'high' ? 'text-red-600' :
-              pref.demandLevel === 'medium' ? 'text-amber-600' : 'text-gray-600'
-            }`}>
-              {pref.demandLevel === 'high' ? '旺盛（高）' :
-               pref.demandLevel === 'medium' ? '標準（中）' : '限定的（低）'}
-            </span>
+            <DemandBadge level={pref.demandLevel} />
           </div>
         </div>
       </div>
@@ -112,9 +164,12 @@ export default function PrefTopPage({ params }: { params: { pref: string } }) {
                 <span className="text-blue-600 text-sm font-bold">→</span>
               </div>
               <p className="text-xs text-gray-500 mb-3 line-clamp-2">{job.description}</p>
-              <div className="flex items-center justify-between">
-                <span className="text-xs text-gray-500">平均年収</span>
-                <span className="font-bold text-blue-700">約{salary}万円〜</span>
+              {/* ② 工種カードの年収表示強化 */}
+              <p className="text-xs mb-2" style={{ color: '#6b7280' }}>
+                目安年収：約{salary}万円〜
+              </p>
+              <div className="text-sm font-semibold" style={{ color: '#1a2744' }}>
+                {pref.nameShort}の{job.name}求人を見る →
               </div>
               <div className="text-xs text-gray-400 mt-1">
                 {job.license}

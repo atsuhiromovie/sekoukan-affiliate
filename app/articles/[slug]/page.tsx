@@ -6,7 +6,7 @@ import ReactMarkdown from 'react-markdown';
 import type { Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { fetchArticles } from '../../../lib/sheets';
-import { ARTICLE_CATEGORIES } from '../../../lib/constants';
+import { ARTICLE_CATEGORIES, JOB_TYPES, PREFS } from '../../../lib/constants';
 import ArticleImage from './ArticleImage';
 
 // ===== カテゴリ別カラー（heroImage代替）※英語ID対応 =====
@@ -298,26 +298,54 @@ export default async function ArticleDetailPage({
       </article>
 
       {/* CTA */}
-      <div
-        className="mt-12 rounded-xl p-6 text-center"
-        style={{ backgroundColor: '#1a2744' }}
-      >
-        <p className="text-white font-bold mb-1">
-          {article.pref
-            ? `${article.pref}の転職エージェントを比較する`
-            : '転職エージェントを今すぐ比較する'}
-        </p>
-        <p className="text-sm mb-4" style={{ color: 'rgba(255,255,255,0.6)' }}>
-          都道府県・工種別の求人・エージェント情報を無料で確認
-        </p>
-        <Link
-          href="/"
-          className="inline-block rounded-lg px-6 py-2.5 text-sm font-semibold transition-opacity hover:opacity-90"
-          style={{ backgroundColor: '#f59e0b', color: '#1a2744' }}
-        >
-          エージェントを比較する →
-        </Link>
-      </div>
+      {(() => {
+        const jobTypeData = article.jobType
+          ? JOB_TYPES.find((j) => j.id === article.jobType)
+          : undefined;
+        const prefData = article.pref
+          ? PREFS.find((p) => p.id === article.pref)
+          : undefined;
+
+        let ctaHeading: string;
+        let ctaButtonLabel: string;
+        let ctaHref: string;
+
+        if (prefData && jobTypeData) {
+          // pref + jobType どちらも設定されている場合
+          ctaHeading = `${prefData.name}の${jobTypeData.fullName}求人を見る`;
+          ctaButtonLabel = `${prefData.nameShort}の求人を見る →`;
+          ctaHref = `/${article.pref}/${article.jobType}/`;
+        } else if (jobTypeData) {
+          // jobType のみ設定されている場合
+          ctaHeading = `${jobTypeData.fullName}の転職エージェントを比較する`;
+          ctaButtonLabel = 'エージェントを比較する →';
+          ctaHref = '/';
+        } else {
+          // どちらも設定されていない場合
+          ctaHeading = '転職エージェントを今すぐ比較する';
+          ctaButtonLabel = 'エージェントを比較する →';
+          ctaHref = '/';
+        }
+
+        return (
+          <div
+            className="mt-12 rounded-xl p-6 text-center"
+            style={{ backgroundColor: '#1a2744' }}
+          >
+            <p className="text-white font-bold mb-1">{ctaHeading}</p>
+            <p className="text-sm mb-4" style={{ color: 'rgba(255,255,255,0.6)' }}>
+              都道府県・工種別の求人・エージェント情報を無料で確認
+            </p>
+            <Link
+              href={ctaHref}
+              className="inline-block rounded-lg px-6 py-2.5 text-sm font-semibold transition-opacity hover:opacity-90"
+              style={{ backgroundColor: '#f59e0b', color: '#1a2744' }}
+            >
+              {ctaButtonLabel}
+            </Link>
+          </div>
+        );
+      })()}
 
       {/* 関連記事 */}
       {related.length > 0 && (

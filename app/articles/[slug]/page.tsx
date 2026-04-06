@@ -157,11 +157,44 @@ export default async function ArticleDetailPage({
   const fallbackColor =
     CATEGORY_COLORS[article.category ?? ''] ?? '#1a2744';
 
+  const siteUrl = process.env.SITE_URL || 'https://sekoukan-navi.com';
+  const pageUrl = `${siteUrl}/articles/${article.slug}/`;
+
+  // Article JSON-LD
+  const articleSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: article.title,
+    description: article.description || undefined,
+    datePublished: article.publishedAt || undefined,
+    dateModified: article.publishedAt || undefined,
+    image: article.heroImage ? `${siteUrl}${article.heroImage}` : undefined,
+    url: pageUrl,
+    inLanguage: 'ja',
+    publisher: {
+      '@type': 'Organization',
+      name: '施工管理転職ナビ',
+      url: siteUrl,
+    },
+  };
+
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'ホーム', item: siteUrl },
+      { '@type': 'ListItem', position: 2, name: '転職コラム', item: `${siteUrl}/articles/` },
+      { '@type': 'ListItem', position: 3, name: article.title, item: pageUrl },
+    ],
+  };
+
   return (
     <div
       className="max-w-3xl mx-auto px-4 py-10"
       style={{ fontSize: '1.0625rem' }}
     >
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       {/* パンくず */}
       <nav className="text-sm text-gray-500 mb-6">
         <Link href="/" className="hover:underline">ホーム</Link>

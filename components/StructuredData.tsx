@@ -43,7 +43,7 @@ export default function StructuredData({
         '@type': 'ListItem',
         position: 1,
         name: 'ホーム',
-        item: process.env.SITE_URL || 'https://sekoukan-agent.netlify.app',
+        item: process.env.SITE_URL || 'https://sekoukan-navi.com',
       },
       {
         '@type': 'ListItem',
@@ -66,7 +66,7 @@ export default function StructuredData({
     publisher: {
       '@type': 'Organization',
       name: '施工管理転職ナビ',
-      url: process.env.SITE_URL || 'https://sekoukan-agent.netlify.app',
+      url: process.env.SITE_URL || 'https://sekoukan-navi.com',
     },
   };
 

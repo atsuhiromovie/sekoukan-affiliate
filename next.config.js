@@ -18,7 +18,7 @@ const nextConfig = {
 
   // 環境変数をビルド時に注入
   env: {
-    SITE_URL: process.env.SITE_URL || 'https://sekoukan-agent.netlify.app',
+    SITE_URL: process.env.SITE_URL || 'https://sekoukan-navi.com',
     BUILD_DATE: new Date().toISOString().split('T')[0],
   },
 };

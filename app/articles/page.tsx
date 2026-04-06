@@ -1,6 +1,8 @@
 import { Metadata } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
 import { fetchArticles } from '../../lib/sheets';
+import { ARTICLE_CATEGORIES } from '../../lib/constants';
 
 export const metadata: Metadata = {
   title: '転職コラム | 施工管理転職ナビ',
@@ -50,10 +52,12 @@ export default async function ArticlesPage() {
             >
               {/* サムネイル */}
               {article.heroImage ? (
-                <div className="h-44 overflow-hidden bg-gray-100">
-                  <img
+                <div className="relative h-44 overflow-hidden bg-gray-100">
+                  <Image
                     src={article.heroImage}
                     alt={article.title}
+                    width={640}
+                    height={176}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                 </div>
@@ -73,7 +77,7 @@ export default async function ArticlesPage() {
                     className="inline-block text-xs font-semibold px-2 py-0.5 rounded mb-2"
                     style={{ backgroundColor: '#f59e0b', color: '#1a2744' }}
                   >
-                    {article.category}
+                    {ARTICLE_CATEGORIES[article.category] ?? article.category}
                   </span>
                 )}
                 <h2

@@ -8,7 +8,8 @@ import { fetchAffiliatesFromSheets, fetchArticles } from '../lib/sheets';
 export const metadata: Metadata = {
   title: '施工管理転職ナビ | 47都道府県×5工種別おすすめエージェント比較',
   description:
-    '施工管理技士の転職を成功させる専門情報サイト。建築・土木・電気工事・管工事・造園の工種別に、都道府県別の求人・平均年収・おすすめエージェントを比較掲載。',
+    '47都道府県×5工種の求人に対応。建築・土木・電気工事・管工事・造園の施工管理技士向けおすすめエージェントを比較。転職のコツ・平均年収データも掲載。',
+  alternates: { canonical: 'https://sekoukan-navi.com/' },
 };
 
 const REGION_EN: Record<string, string> = {
@@ -148,7 +149,7 @@ export default async function HomePage() {
             borderBottom: '1px solid rgba(255,255,255,0.06)',
           }}
         >
-          <div className="max-w-5xl mx-auto px-4 py-5 grid grid-cols-4">
+          <div className="max-w-5xl mx-auto px-4 py-5 grid grid-cols-2 sm:grid-cols-4">
             {[
               { num: '47',  label: '都道府県対応' },
               { num: '5',   label: '工種対応' },
@@ -336,12 +337,12 @@ export default async function HomePage() {
                   }}
                 >
                   {article.heroImage ? (
-                    <div className="relative overflow-hidden" style={{ height: '80px' }}>
+                    <div className="relative overflow-hidden" style={{ height: '120px' }}>
                       <Image
                         src={article.heroImage}
                         alt={article.title}
                         width={400}
-                        height={80}
+                        height={120}
                         className="w-full h-full object-cover"
                       />
                     </div>
@@ -349,7 +350,7 @@ export default async function HomePage() {
                     <div
                       className="flex items-center justify-center text-xs"
                       style={{
-                        height: '80px',
+                        height: '120px',
                         backgroundColor: '#1a3a5c',
                         color: '#3a6080',
                         letterSpacing: '0.1em',

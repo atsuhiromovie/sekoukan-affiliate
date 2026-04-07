@@ -7,7 +7,7 @@ import { ARTICLE_CATEGORIES } from '../../lib/constants';
 export const metadata: Metadata = {
   title: '転職コラム | 施工管理転職ナビ',
   description:
-    '施工管理技士の転職に役立つコラム・ノウハウ記事を掲載。年収アップのコツ・エージェント活用術・資格取得情報など。',
+    '施工管理技士の年収アップ・資格取得・エージェント活用術など転職に役立つコラムを掲載。建築・土木・電気工事・管工事・造園の工種別情報も充実。',
   alternates: { canonical: '/articles/' },
 };
 

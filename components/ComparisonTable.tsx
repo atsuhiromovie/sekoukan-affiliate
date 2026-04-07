@@ -1,5 +1,12 @@
 import { AffiliateItem } from '../lib/types';
 
+function getRankEmoji(rank: number): string {
+  if (rank === 1) return '🥇';
+  if (rank === 2) return '🥈';
+  if (rank === 3) return '🥉';
+  return `${rank}`;
+}
+
 interface Props {
   affiliates: AffiliateItem[];
   prefName: string;
@@ -19,7 +26,7 @@ export default function ComparisonTable({ affiliates, prefName, jobTypeName }: P
       {/* モバイル：カード型 / デスクトップ：テーブル型 */}
       <div className="space-y-6 lg:hidden">
         {affiliates.map((item, i) => (
-          <MobileCard key={item.id} item={item} rank={i + 1} prefName={prefName} jobTypeName={jobTypeName} />
+          <MobileCard key={item.id} item={item} rank={i + 1} prefName={prefName} />
         ))}
       </div>
 
@@ -48,7 +55,7 @@ export default function ComparisonTable({ affiliates, prefName, jobTypeName }: P
                 }`}
               >
                 <td className="p-3 text-center font-bold text-lg">
-                  {i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i + 1}`}
+                  {getRankEmoji(i + 1)}
                 </td>
                 <td className="p-3">
                   <div className="font-bold text-base text-gray-900">{item.name}</div>
@@ -86,9 +93,7 @@ export default function ComparisonTable({ affiliates, prefName, jobTypeName }: P
                         : 'bg-blue-600 hover:bg-blue-700 text-white'
                     }`}
                   >
-                    公式サイトで
-                    <br />
-                    求人を見る →
+                    {item.isRecommended ? '★ 無料で登録する →' : '公式サイトで無料登録 →'}
                   </a>
                 </td>
               </tr>
@@ -113,9 +118,8 @@ function MobileCard({
   item: AffiliateItem;
   rank: number;
   prefName: string;
-  jobTypeName: string;
 }) {
-  const rankEmoji = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : `${rank}位`;
+  const rankEmoji = getRankEmoji(rank);
 
   return (
     <div
@@ -156,7 +160,7 @@ function MobileCard({
             : 'bg-blue-600 hover:bg-blue-700'
         }`}
       >
-        公式サイトで求人を見る →
+        {item.isRecommended ? '★ 無料で登録する →' : '公式サイトで無料登録 →'}
       </a>
     </div>
   );

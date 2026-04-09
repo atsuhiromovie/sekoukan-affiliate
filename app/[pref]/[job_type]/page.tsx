@@ -26,6 +26,8 @@ export async function generateStaticParams() {
   return params; // 計235件
 }
 
+const siteUrl = process.env.SITE_URL || 'https://sekoukan-navi.com';
+
 // ===== メタデータ動的生成 =====
 export async function generateMetadata({
   params,
@@ -45,11 +47,19 @@ export async function generateMetadata({
     title,
     description,
     alternates: {
-      canonical: `/${params.pref}/${params.job_type}/`,
+      canonical: `${siteUrl}/${params.pref}/${params.job_type}/`,
     },
     openGraph: {
       title,
       description,
+      images: [
+        {
+          url: `${siteUrl}/images/og-default.jpg`,
+          width: 1200,
+          height: 630,
+          alt: title,
+        },
+      ],
     },
   };
 }
@@ -90,7 +100,6 @@ export default async function PrefJobTypePage({
     faqMap.get(salaryKey) ??
     generateDefaultFAQs(pref.name, jobType.fullName, avgSalary);
 
-  const siteUrl = process.env.SITE_URL || 'https://sekoukan-agent.netlify.app';
   const pageUrl = `${siteUrl}/${pref.id}/${jobType.id}/`;
 
   return (

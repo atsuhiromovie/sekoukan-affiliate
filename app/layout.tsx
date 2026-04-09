@@ -1,8 +1,10 @@
 import type { Metadata } from 'next';
 import './globals.css';
 
+const siteUrl = process.env.SITE_URL || 'https://sekoukan-navi.com';
+
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.SITE_URL || 'https://sekoukan-agent.netlify.app'),
+  metadataBase: new URL(siteUrl),
   title: {
     default: '施工管理転職ナビ | 都道府県×工種別おすすめエージェント比較',
     template: '%s | 施工管理転職ナビ',
@@ -17,6 +19,19 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'ja_JP',
     siteName: '施工管理転職ナビ',
+    url: siteUrl,
+    images: [
+      {
+        url: `${siteUrl}/images/og-default.jpg`,
+        width: 1200,
+        height: 630,
+        alt: '施工管理転職ナビ',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    images: [`${siteUrl}/images/og-default.jpg`],
   },
 };
 
@@ -28,6 +43,19 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <head>
+        {/* Organization JSON-LD */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'Organization',
+              name: '施工管理転職ナビ',
+              url: 'https://sekoukan-navi.com',
+              logo: 'https://sekoukan-navi.com/images/og-default.jpg',
+            }),
+          }}
+        />
         {/* Google Fonts */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />

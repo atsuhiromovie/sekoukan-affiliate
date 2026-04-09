@@ -7,6 +7,7 @@ import type { Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { fetchArticles } from '../../../lib/sheets';
 import { ARTICLE_CATEGORIES, JOB_TYPES, PREFS } from '../../../lib/constants';
+import { SITE_URL } from '../../../lib/config';
 import ArticleImage from './ArticleImage';
 
 // ===== カテゴリ別カラー（heroImage代替）※英語ID対応 =====
@@ -157,7 +158,7 @@ export default async function ArticleDetailPage({
   const fallbackColor =
     CATEGORY_COLORS[article.category ?? ''] ?? '#1a2744';
 
-  const siteUrl = process.env.SITE_URL || 'https://sekoukan-navi.com';
+  const siteUrl = SITE_URL;
   const pageUrl = `${siteUrl}/articles/${article.slug}/`;
 
   // Article JSON-LD
@@ -289,9 +290,6 @@ export default async function ArticleDetailPage({
             }
 
             const processed = result.join('\n');
-            if (process.env.NODE_ENV === 'development') {
-              console.log('[ArticleBody processed]:\n', processed);
-            }
             return processed;
           })()}
         </ReactMarkdown>

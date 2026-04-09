@@ -2,8 +2,7 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { PREFS, JOB_TYPES, getPrefById } from '../../lib/constants';
-
-const siteUrl = process.env.SITE_URL || 'https://sekoukan-navi.com';
+import { SITE_URL as siteUrl } from '../../lib/config';
 
 // ===== SSG: 47都道府県分のパスを生成 =====
 export async function generateStaticParams() {
@@ -139,9 +138,13 @@ export default function PrefTopPage({ params }: { params: { pref: string } }) {
         )}
 
         <p className="text-gray-600 mb-8 leading-relaxed">
-          {pref.name}で施工管理の転職を検討中の方へ。建築・土木・電気工事・管工事・造園の5工種別に、
-          {pref.name}の求人に強い転職エージェントと平均年収データをまとめました。
-          工種を選んで詳細情報をご確認ください。
+          {pref.name}で施工管理の転職を考えるなら、まずは地域の求人動向と年収相場を把握することが重要です。
+          このページでは、建築・土木・電気工事・管工事・造園の5工種別に、
+          {pref.name}の求人に強いおすすめエージェントを比較・紹介しています。
+          {pref.name}の施工管理技士の平均年収は約{pref.avgSalary}万円で、
+          工種によってはさらに高い年収も狙えます。
+          転職エージェントを活用することで、年収交渉や非公開求人へのアクセスが可能になります。
+          工種を選んで、{pref.name}の詳細な転職情報をご確認ください。
         </p>
 
         {/* 地域特性バッジ */}

@@ -213,7 +213,7 @@ export default async function HomePage() {
                     key={item.id}
                     href={item.url}
                     target="_blank"
-                    rel="noopener noreferrer nofollow"
+                    rel="noopener noreferrer sponsored"
                     className="flex flex-col rounded-xl p-5 border transition-colors hover:border-amber-400"
                     style={{
                       backgroundColor: '#111d35',

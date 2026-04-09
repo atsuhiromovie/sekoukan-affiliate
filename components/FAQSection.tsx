@@ -28,9 +28,9 @@ export default function FAQSection({ faqs, prefName, jobTypeName }: Props) {
               className="w-full flex items-start justify-between p-4 text-left bg-white hover:bg-blue-50 transition-colors"
               aria-expanded={openIndex === i}
             >
-              <span className="flex items-start gap-2 font-medium text-gray-800">
-                <span className="shrink-0 font-bold text-blue-600">Q.</span>
-                {faq.question}
+              <span className="flex items-start gap-2 font-medium text-gray-800 min-w-0 flex-1">
+                <span className="shrink-0 font-bold text-blue-600 leading-snug">Q.</span>
+                <span className="break-words">{faq.question}</span>
               </span>
               <span
                 className={`shrink-0 ml-3 text-gray-400 transition-transform ${

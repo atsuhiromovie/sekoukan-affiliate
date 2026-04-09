@@ -8,6 +8,7 @@ import remarkGfm from 'remark-gfm';
 import { fetchArticles } from '../../../lib/sheets';
 import { ARTICLE_CATEGORIES, JOB_TYPES, PREFS } from '../../../lib/constants';
 import { SITE_URL } from '../../../lib/config';
+import { addInternalLinks } from '../../../lib/internal-links';
 import ArticleImage from './ArticleImage';
 
 // ===== カテゴリ別カラー（heroImage代替）※英語ID対応 =====
@@ -290,7 +291,7 @@ export default async function ArticleDetailPage({
             }
 
             const processed = result.join('\n');
-            return processed;
+            return addInternalLinks(processed, article.slug, articles);
           })()}
         </ReactMarkdown>
       </article>

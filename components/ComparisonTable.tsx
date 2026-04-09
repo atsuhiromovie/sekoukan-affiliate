@@ -1,4 +1,5 @@
 import { AffiliateItem } from '../lib/types';
+import TrackingCtaLink from './TrackingCtaLink';
 
 function getRankEmoji(rank: number): string {
   if (rank === 1) return '🥇';
@@ -7,13 +8,23 @@ function getRankEmoji(rank: number): string {
   return `${rank}`;
 }
 
+const JOB_TYPE_IDS = ['architecture', 'civil', 'electrical', 'pipe', 'landscaping'] as const;
+const JOB_TYPE_LABELS: Record<string, string> = {
+  architecture: '建築',
+  civil: '土木',
+  electrical: '電気',
+  pipe: '管工事',
+  landscaping: '造園',
+};
+
 interface Props {
   affiliates: AffiliateItem[];
   prefName: string;
   jobTypeName: string;
+  jobTypeId?: string; // GA4トラッキング用
 }
 
-export default function ComparisonTable({ affiliates, prefName, jobTypeName }: Props) {
+export default function ComparisonTable({ affiliates, prefName, jobTypeName, jobTypeId = '' }: Props) {
   return (
     <section className="my-10" id="comparison">
       <h2 className="text-2xl font-bold text-gray-800 mb-2 border-l-4 border-blue-600 pl-4">
@@ -26,7 +37,14 @@ export default function ComparisonTable({ affiliates, prefName, jobTypeName }: P
       {/* モバイル：カード型 / デスクトップ：テーブル型 */}
       <div className="space-y-6 lg:hidden">
         {affiliates.map((item, i) => (
-          <MobileCard key={item.id} item={item} rank={i + 1} prefName={prefName} />
+          <MobileCard
+            key={item.id}
+            item={item}
+            rank={i + 1}
+            prefName={prefName}
+            jobTypeName={jobTypeName}
+            jobTypeId={jobTypeId}
+          />
         ))}
       </div>
 
@@ -37,6 +55,7 @@ export default function ComparisonTable({ affiliates, prefName, jobTypeName }: P
               <th className="p-3 text-left w-12">順位</th>
               <th className="p-3 text-left">サービス名</th>
               <th className="p-3 text-left">特徴・強み</th>
+              <th className="p-3 text-center">工種対応</th>
               <th className="p-3 text-center">対応地域</th>
               <th className="p-3 text-center">年収アップ実績</th>
               <th className="p-3 text-center w-40">公式サイト</th>
@@ -76,6 +95,20 @@ export default function ComparisonTable({ affiliates, prefName, jobTypeName }: P
                     ))}
                   </ul>
                 </td>
+                <td className="p-3 text-center text-xs">
+                  {JOB_TYPE_IDS.map((jt) => {
+                    const covered = item.jobTypes.includes('all') || item.jobTypes.includes(jt);
+                    return (
+                      <div
+                        key={jt}
+                        className={`flex items-center gap-1 ${covered ? 'text-green-600' : 'text-gray-300'}`}
+                      >
+                        <span>{covered ? '✓' : '○'}</span>
+                        <span>{JOB_TYPE_LABELS[jt]}</span>
+                      </div>
+                    );
+                  })}
+                </td>
                 <td className="p-3 text-center text-gray-700">
                   {item.regions.includes('all') ? '全国対応' : `${prefName}対応`}
                 </td>
@@ -83,10 +116,12 @@ export default function ComparisonTable({ affiliates, prefName, jobTypeName }: P
                   実績多数
                 </td>
                 <td className="p-3 text-center">
-                  <a
+                  <TrackingCtaLink
                     href={item.url}
-                    target="_blank"
-                    rel="noopener noreferrer sponsored"
+                    isRecommended={item.isRecommended}
+                    agentName={item.name}
+                    prefName={prefName}
+                    jobTypeName={jobTypeName}
                     className={`block w-full py-2.5 px-3 rounded font-bold text-sm text-center transition-colors ${
                       item.isRecommended
                         ? 'bg-amber-400 hover:bg-amber-500 text-white'
@@ -94,7 +129,7 @@ export default function ComparisonTable({ affiliates, prefName, jobTypeName }: P
                     }`}
                   >
                     {item.isRecommended ? '★ 無料で登録する →' : '公式サイトで無料登録 →'}
-                  </a>
+                  </TrackingCtaLink>
                 </td>
               </tr>
             ))}
@@ -114,10 +149,14 @@ function MobileCard({
   item,
   rank,
   prefName,
+  jobTypeName,
+  jobTypeId,
 }: {
   item: AffiliateItem;
   rank: number;
   prefName: string;
+  jobTypeName: string;
+  jobTypeId: string;
 }) {
   const rankEmoji = getRankEmoji(rank);
 
@@ -150,10 +189,12 @@ function MobileCard({
       <div className="text-xs text-gray-500 mb-3">
         対応地域: {item.regions.includes('all') ? '全国' : `${prefName}対応`}
       </div>
-      <a
+      <TrackingCtaLink
         href={item.url}
-        target="_blank"
-        rel="noopener noreferrer sponsored"
+        isRecommended={item.isRecommended}
+        agentName={item.name}
+        prefName={prefName}
+        jobTypeName={jobTypeName}
         className={`block w-full py-3 rounded-lg font-bold text-center text-white transition-colors ${
           item.isRecommended
             ? 'bg-amber-400 hover:bg-amber-500'
@@ -161,7 +202,7 @@ function MobileCard({
         }`}
       >
         {item.isRecommended ? '★ 無料で登録する →' : '公式サイトで無料登録 →'}
-      </a>
+      </TrackingCtaLink>
     </div>
   );
 }

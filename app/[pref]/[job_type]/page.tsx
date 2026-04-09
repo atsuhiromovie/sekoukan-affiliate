@@ -13,6 +13,7 @@ import ComparisonTable from '../../../components/ComparisonTable';
 import SalaryCalculator from '../../../components/SalaryCalculator';
 import FAQSection from '../../../components/FAQSection';
 import StructuredData from '../../../components/StructuredData';
+import StickyCtaButton from '../../../components/StickyCtaButton';
 import { AffiliateItem } from '../../../lib/types';
 
 // ===== SSG: 235パターン（47都道府県 × 5工種）を全生成 =====
@@ -280,6 +281,12 @@ export default async function PrefJobTypePage({
               </a>
             ))}
         </div>
+        {affiliates.length > 0 && (
+          <StickyCtaButton
+            href={(affiliates.find(a => a.isRecommended) ?? affiliates[0]).url}
+            agentName={(affiliates.find(a => a.isRecommended) ?? affiliates[0]).name}
+          />
+        )}
       </div>
     </>
   );

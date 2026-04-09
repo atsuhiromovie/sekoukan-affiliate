@@ -10,6 +10,7 @@ import { ARTICLE_CATEGORIES, JOB_TYPES, PREFS } from '../../../lib/constants';
 import { SITE_URL } from '../../../lib/config';
 import { addInternalLinks } from '../../../lib/internal-links';
 import ArticleImage from './ArticleImage';
+import AffiliateCta from '../../../components/AffiliateCta';
 
 // ===== カテゴリ別カラー（heroImage代替）※英語ID対応 =====
 const CATEGORY_COLORS: Record<string, string> = {
@@ -326,6 +327,12 @@ export default async function ArticleDetailPage({
           ctaHref = '/';
         }
 
+        const ctaAgentName = prefData && jobTypeData
+          ? `${prefData.name}/${jobTypeData.fullName}`
+          : jobTypeData
+          ? jobTypeData.fullName
+          : '';
+
         return (
           <div
             className="mt-12 rounded-xl p-6 text-center"
@@ -335,13 +342,16 @@ export default async function ArticleDetailPage({
             <p className="text-sm mb-4" style={{ color: 'rgba(255,255,255,0.6)' }}>
               都道府県・工種別の求人・エージェント情報を無料で確認
             </p>
-            <Link
+            <AffiliateCta
               href={ctaHref}
+              agentName={ctaAgentName}
+              source="article_cta"
+              isExternal={false}
               className="inline-block rounded-lg px-6 py-2.5 text-sm font-semibold transition-opacity hover:opacity-90"
               style={{ backgroundColor: '#f59e0b', color: '#1a2744' }}
             >
               {ctaButtonLabel}
-            </Link>
+            </AffiliateCta>
           </div>
         );
       })()}

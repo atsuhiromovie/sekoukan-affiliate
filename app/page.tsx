@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { Metadata } from 'next';
 import { PREFS, JOB_TYPES, ARTICLE_CATEGORIES } from '../lib/constants';
 import PrefJobSelector from '../components/PrefJobSelector';
+import AffiliateCta from '../components/AffiliateCta';
 import { fetchAffiliatesFromSheets, fetchArticles } from '../lib/sheets';
 
 export const metadata: Metadata = {
@@ -209,11 +210,12 @@ export default async function HomePage() {
               <SectionHead en="RECOMMENDED" ja="おすすめ転職サービス" />
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                 {recommended.map((item) => (
-                  <a
+                  <AffiliateCta
                     key={item.id}
                     href={item.url}
-                    target="_blank"
-                    rel="noopener noreferrer sponsored"
+                    agentName={item.name}
+                    isRecommended={item.isRecommended}
+                    source="top_recommended"
                     className="flex flex-col rounded-xl p-5 border transition-colors hover:border-amber-400"
                     style={{
                       backgroundColor: '#111d35',
@@ -257,7 +259,7 @@ export default async function HomePage() {
                     >
                       無料で相談する →
                     </div>
-                  </a>
+                  </AffiliateCta>
                 ))}
               </div>
             </section>

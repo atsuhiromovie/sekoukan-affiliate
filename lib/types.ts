@@ -32,6 +32,8 @@ export interface AffiliateItem {
   badge?: string;       // バッジテキスト（例: "おすすめNo.1"）
   minSalaryUp?: number; // 年収アップ実績（万円）
   isRecommended?: boolean;
+  targetTags?: string[];  // こんな人におすすめ（例: ["初めての転職", "40代歓迎"]）
+  reason?: string;        // 編集部コメント（選んだ理由・一言）
 }
 
 export interface FAQItem {

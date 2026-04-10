@@ -35,6 +35,8 @@ export const DEFAULT_AFFILIATES: AffiliateItem[] = [
     badge: 'おすすめNo.1',
     minSalaryUp: 100,
     isRecommended: true,
+    targetTags: ['年収アップ重視', '初めての転職', '施工管理特化'],
+    reason: '施工管理専門のアドバイザーが対応。非公開求人が80%以上と求人の質が高く、年収100万円UP実績も豊富なため総合的に最もおすすめ。',
   },
   {
     id: 'rsg',
@@ -52,6 +54,8 @@ export const DEFAULT_AFFILIATES: AffiliateItem[] = [
     badge: '40代歓迎',
     minSalaryUp: 80,
     isRecommended: false,
+    targetTags: ['40代・50代歓迎', '1級資格保有者', 'ゼネコン志望'],
+    reason: '40〜50代のミドル層に強く、大手ゼネコン・サブコンへの転職実績が豊富。資格保有者が高年収案件を狙うならここ。',
   },
   {
     id: 'sekoukan-navi',
@@ -67,6 +71,8 @@ export const DEFAULT_AFFILIATES: AffiliateItem[] = [
     jobTypes: ['all'],
     url: 'https://px.a8.net/svt/ejp?a8mat=ZZZZZ',
     isRecommended: false,
+    targetTags: ['未経験・第二新卒', '地方勤務希望', '求人数重視'],
+    reason: '求人数10,000件以上で選択肢が多く、未経験歓迎求人も充実。地方の求人を幅広く探したい方や、まず求人量を確認したい方に向いている。',
   },
 ];
 
@@ -75,7 +81,7 @@ export const DEFAULT_AFFILIATES: AffiliateItem[] = [
 /**
  * アフィリエイト案件をスプレッドシートから取得
  * シート名: "affiliate_items"
- * カラム順: id | name | tagline | features(|区切り) | regions(|区切り) | jobTypes(|区切り) | url | badge | minSalaryUp | isRecommended
+ * カラム順: id | name | tagline | features(|区切り) | regions(|区切り) | jobTypes(|区切り) | url | badge | minSalaryUp | isRecommended | targetTags(|区切り) | reason
  */
 export async function fetchAffiliatesFromSheets(): Promise<AffiliateItem[]> {
   if (USE_LOCAL_FALLBACK) {
@@ -84,7 +90,7 @@ export async function fetchAffiliatesFromSheets(): Promise<AffiliateItem[]> {
   }
 
   try {
-    const range = encodeURIComponent('affiliate_items!A2:J100');
+    const range = encodeURIComponent('affiliate_items!A2:L100');
     const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${range}?key=${API_KEY}`;
 
     const res = await fetch(url, { next: { revalidate: false } }); // SSGなのでrevalidate不要
@@ -106,6 +112,8 @@ export async function fetchAffiliatesFromSheets(): Promise<AffiliateItem[]> {
         badge: row[7] || undefined,
         minSalaryUp: row[8] ? Number(row[8]) : undefined,
         isRecommended: row[9] === 'TRUE' || row[9] === '1',
+        targetTags: row[10] ? row[10].split('|').filter(Boolean) : undefined,
+        reason: row[11] || undefined,
       }));
   } catch (err) {
     console.error('[Sheets] 取得エラー → フォールバックを使用:', err);

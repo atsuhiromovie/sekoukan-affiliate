@@ -53,14 +53,7 @@ export async function generateMetadata({
     openGraph: {
       title,
       description,
-      images: [
-        {
-          url: `${siteUrl}/images/og-default.jpg`,
-          width: 1200,
-          height: 630,
-          alt: title,
-        },
-      ],
+      // og:image は opengraph-image.tsx が自動生成するため個別指定不要
     },
   };
 }
@@ -257,6 +250,53 @@ export default async function PrefJobTypePage({
 
         {/* ===== FAQ ===== */}
         <FAQSection faqs={faqs} prefName={pref.name} jobTypeName={jobType.fullName} />
+
+        {/* ===== 関連ページ内部リンク ===== */}
+        <section className="my-10 bg-gray-50 border border-gray-200 rounded-xl p-6">
+          <h2 className="text-lg font-bold text-gray-800 mb-4">関連する転職情報を見る</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {/* 同じ都道府県・他の工種 */}
+            <div>
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">
+                {pref.nameShort}の他の工種
+              </p>
+              <ul className="space-y-2">
+                {JOB_TYPES.filter((j) => j.id !== jobType.id).map((j) => (
+                  <li key={j.id}>
+                    <Link
+                      href={`/${pref.id}/${j.id}/`}
+                      className="flex items-center gap-2 text-sm text-blue-600 hover:underline"
+                    >
+                      <span className="text-gray-400">›</span>
+                      {pref.nameShort}の{j.fullName}転職
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            {/* 同じ工種・同じ地方の他都道府県 */}
+            <div>
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">
+                {jobType.name}転職・同地方の他都道府県
+              </p>
+              <ul className="space-y-2">
+                {PREFS.filter((p) => p.region === pref.region && p.id !== pref.id)
+                  .slice(0, 5)
+                  .map((p) => (
+                    <li key={p.id}>
+                      <Link
+                        href={`/${p.id}/${jobType.id}/`}
+                        className="flex items-center gap-2 text-sm text-blue-600 hover:underline"
+                      >
+                        <span className="text-gray-400">›</span>
+                        {p.name}の{jobType.fullName}転職
+                      </Link>
+                    </li>
+                  ))}
+              </ul>
+            </div>
+          </div>
+        </section>
 
         {/* CTA再掲 */}
         <div className="my-10 bg-gradient-to-r from-blue-700 to-blue-900 rounded-2xl p-8 text-center text-white">

@@ -54,6 +54,9 @@ export default function StructuredData({
     ],
   };
 
+  const siteUrl = process.env.SITE_URL || 'https://sekoukan-navi.com';
+  const today = new Date().toISOString().split('T')[0];
+
   // ===== WebPage 構造化データ =====
   const webPageSchema = {
     '@context': 'https://schema.org',
@@ -61,12 +64,18 @@ export default function StructuredData({
     name: `${prefName}の${jobTypeName}転職おすすめエージェント比較`,
     description: `${prefName}で${jobTypeName}の転職を成功させるための転職エージェント比較。平均年収${avgSalary}万円台の求人情報も掲載。`,
     url: pageUrl,
-    dateModified: new Date().toISOString().split('T')[0],
+    datePublished: '2024-01-01',
+    dateModified: today,
     inLanguage: 'ja',
+    author: {
+      '@type': 'Person',
+      name: 'よんさん',
+      url: `${siteUrl}/about`,
+    },
     publisher: {
       '@type': 'Organization',
       name: '施工管理転職ナビ',
-      url: process.env.SITE_URL || 'https://sekoukan-navi.com',
+      url: siteUrl,
     },
   };
 

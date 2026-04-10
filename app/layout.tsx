@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Noto_Sans_JP, Oswald } from 'next/font/google';
 import Header from '../components/Header';
+import ScrollDepthTracker from '../components/ScrollDepthTracker';
 import './globals.css';
 
 const notoSansJP = Noto_Sans_JP({
@@ -88,6 +89,7 @@ export default function RootLayout({
       <body className="font-sans bg-gray-50 text-gray-900 antialiased" style={{ fontFamily: 'var(--font-noto-sans-jp), sans-serif' }}>
         <Header />
 
+        <ScrollDepthTracker />
         <main className="min-h-screen">{children}</main>
 
         {/* グローバルフッター */}

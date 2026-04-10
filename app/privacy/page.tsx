@@ -20,12 +20,27 @@ export default function PrivacyPage() {
       </section>
 
       <section className="mb-8">
-        <h2 className="text-lg font-semibold text-gray-800 mb-3">広告について</h2>
-        <p className="text-gray-600 leading-relaxed">
+        <h2 className="text-lg font-semibold text-gray-800 mb-3">広告・アフィリエイトについて</h2>
+        <p className="text-gray-600 leading-relaxed mb-4">
           本サイトは、各種アフィリエイトプログラムに参加しています。
           サイト内に掲載している広告やリンクを経由して商品・サービスのお申し込みが発生した場合、
           当編集部が報酬を受け取ることがあります。
-          なお、広告掲載の有無はコンテンツの内容・評価に影響を与えておりません。
+          なお、広告掲載の有無・報酬額はコンテンツの内容・評価・掲載順位に影響を与えておりません。
+        </p>
+        <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 text-sm text-amber-900 leading-relaxed space-y-2">
+          <p className="font-semibold">【アフィリエイトリンクの識別方法】</p>
+          <p>
+            転職エージェントの公式サイトへの外部リンク（「無料登録する」「公式サイトで求人を見る」等のボタン・テキスト）は
+            アフィリエイトリンクです。これらのリンクには <code className="bg-amber-100 px-1 rounded text-xs">rel="sponsored"</code> 属性が付与されています。
+          </p>
+          <p>
+            転職エージェント以外への一般的な外部リンク（公的機関・ニュースサイト等）はアフィリエイトリンクではありません。
+          </p>
+        </div>
+        <p className="text-gray-600 leading-relaxed mt-4">
+          掲載エージェントの選定基準・編集方針については
+          <a href="/about/" className="text-blue-600 underline hover:text-blue-800 mx-1">著者プロフィール・運営者情報ページ</a>
+          をご確認ください。
         </p>
       </section>
 

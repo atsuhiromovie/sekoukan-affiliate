@@ -3,6 +3,7 @@
   publish = "out"
 [build.environment]
   NODE_VERSION = "20"
+  SITE_URL = "https://sekoukan-navi.com"
 [[headers]]
   for = "/_next/static/*"
   [headers.values]

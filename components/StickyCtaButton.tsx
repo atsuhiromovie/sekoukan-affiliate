@@ -15,7 +15,6 @@ export default function StickyCtaButton({
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    // 300px スクロール後に表示
     const handleScroll = () => setVisible(window.scrollY > 300);
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
@@ -30,17 +29,28 @@ export default function StickyCtaButton({
     }
   };
 
-  if (!visible) return null;
-
+  // DOM に常に存在させ opacity で制御 → CLS を防ぐ
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 lg:hidden p-3"
-      style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.15), transparent)', backdropFilter: 'blur(2px)' }}>
+    <div
+      className="fixed bottom-0 left-0 right-0 z-50 lg:hidden transition-opacity duration-300"
+      style={{
+        opacity: visible ? 1 : 0,
+        pointerEvents: visible ? 'auto' : 'none',
+        background: 'linear-gradient(to top, rgba(0,0,0,0.15), transparent)',
+        backdropFilter: 'blur(2px)',
+        // iPhone X 以降のホームインジケーター対応
+        paddingBottom: 'max(12px, env(safe-area-inset-bottom))',
+        paddingLeft: '12px',
+        paddingRight: '12px',
+        paddingTop: '8px',
+      }}
+    >
       <a
         href={href}
         target="_blank"
         rel="noopener noreferrer sponsored"
         onClick={handleClick}
-        className="block w-full py-4 rounded-xl font-bold text-center text-white text-base shadow-lg"
+        className="block w-full py-4 rounded-xl font-bold text-center text-white text-base shadow-lg active:scale-95 transition-transform"
         style={{ backgroundColor: '#f59e0b' }}
       >
         {label}

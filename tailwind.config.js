@@ -29,8 +29,8 @@ module.exports = {
         construction: '#374151',
       },
       fontFamily: {
-        sans: ['"Noto Sans JP"', 'sans-serif'],
-        display: ['Oswald', 'sans-serif'],
+        sans: ['var(--font-noto-sans-jp)', '"Noto Sans JP"', 'sans-serif'],
+        display: ['var(--font-oswald)', 'Oswald', 'sans-serif'],
       },
     },
   },

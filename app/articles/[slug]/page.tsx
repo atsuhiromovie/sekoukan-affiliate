@@ -113,6 +113,8 @@ const mdComponents: Components = {
 // ===== SSG: 全公開記事のslugを事前生成 =====
 export async function generateStaticParams() {
   const articles = await fetchArticles();
+  // APIキー未設定時も空配列のままだと output: 'export' でエラーになるためフォールバック
+  if (articles.length === 0) return [{ slug: '_placeholder' }];
   return articles.map((a) => ({ slug: a.slug }));
 }
 

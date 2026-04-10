@@ -112,8 +112,8 @@ export default function ComparisonTable({ affiliates, prefName, jobTypeName, job
                 <td className="p-3 text-center text-gray-700">
                   {item.regions.includes('all') ? '全国対応' : `${prefName}対応`}
                 </td>
-                <td className="p-3 text-center font-bold text-blue-700">
-                  実績多数
+                <td className="p-3 text-center font-bold text-green-700">
+                  年収UP実績あり
                 </td>
                 <td className="p-3 text-center">
                   <TrackingCtaLink
@@ -128,7 +128,7 @@ export default function ComparisonTable({ affiliates, prefName, jobTypeName, job
                         : 'bg-blue-600 hover:bg-blue-700 text-white'
                     }`}
                   >
-                    {item.isRecommended ? '★ 無料で登録する →' : '公式サイトで無料登録 →'}
+                    {item.isRecommended ? '無料登録して年収交渉を依頼 →' : '無料で登録する →'}
                   </TrackingCtaLink>
                 </td>
               </tr>
@@ -201,7 +201,7 @@ function MobileCard({
             : 'bg-blue-600 hover:bg-blue-700'
         }`}
       >
-        {item.isRecommended ? '★ 無料で登録する →' : '公式サイトで無料登録 →'}
+        {item.isRecommended ? '無料登録して年収交渉を依頼 →' : '無料で登録する →'}
       </TrackingCtaLink>
     </div>
   );

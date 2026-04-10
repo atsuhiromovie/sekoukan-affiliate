@@ -1,5 +1,21 @@
 import type { Metadata } from 'next';
+import { Noto_Sans_JP, Oswald } from 'next/font/google';
+import Header from '../components/Header';
 import './globals.css';
+
+const notoSansJP = Noto_Sans_JP({
+  subsets: ['latin'],
+  weight: ['400', '500', '700'],
+  display: 'swap',
+  variable: '--font-noto-sans-jp',
+});
+
+const oswald = Oswald({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  display: 'swap',
+  variable: '--font-oswald',
+});
 
 const siteUrl = process.env.SITE_URL || 'https://sekoukan-navi.com';
 
@@ -41,7 +57,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ja">
+    <html lang="ja" className={`${notoSansJP.variable} ${oswald.variable}`}>
       <head>
         {/* Organization JSON-LD */}
         <script
@@ -56,13 +72,6 @@ export default function RootLayout({
             }),
           }}
         />
-        {/* Google Fonts */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Oswald:wght@400;500;600;700&display=swap"
-          rel="stylesheet"
-        />
         {/* GA4 */}
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-SCGYMN91JK" />
         <script
@@ -76,34 +85,8 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="font-sans bg-gray-50 text-gray-900 antialiased">
-        {/* グローバルヘッダー */}
-        <header style={{ backgroundColor: '#1a2744' }} className="text-white py-3 px-4 shadow-lg">
-          <div className="max-w-5xl mx-auto flex items-center justify-between">
-            <a href="/" className="flex items-center gap-2">
-              <span className="font-bold text-xl tracking-tight">
-                施工管理
-                <span style={{ color: '#f59e0b' }}>転職</span>
-                ナビ
-              </span>
-            </a>
-            <div className="flex items-center gap-5">
-              <a
-                href="/articles/"
-                className="text-sm font-medium transition-colors hover:opacity-80 hidden sm:block"
-                style={{ color: 'rgba(255,255,255,0.85)', letterSpacing: '0.03em' }}
-              >
-                転職コラム
-              </a>
-              <span
-                className="text-xs hidden md:block tracking-widest"
-                style={{ color: 'rgba(255,255,255,0.45)', fontFamily: 'Oswald, sans-serif', letterSpacing: '0.12em' }}
-              >
-                CONSTRUCTION CAREER NAV
-              </span>
-            </div>
-          </div>
-        </header>
+      <body className="font-sans bg-gray-50 text-gray-900 antialiased" style={{ fontFamily: 'var(--font-noto-sans-jp), sans-serif' }}>
+        <Header />
 
         <main className="min-h-screen">{children}</main>
 

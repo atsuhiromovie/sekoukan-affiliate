@@ -4,6 +4,7 @@
 [build.environment]
   NODE_VERSION = "20"
   SITE_URL = "https://sekoukan-navi.com"
+  NETLIFY_NEXT_PLUGIN_SKIP = "true"
 [[headers]]
   for = "/*"
   [headers.values]

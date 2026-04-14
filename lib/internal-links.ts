@@ -2,7 +2,31 @@ import { PREFS } from './constants';
 import { Article } from './types';
 
 /**
+ * （※内部リンク：#X記事へ）プレースホルダーを実際のMarkdownリンクに変換する
+ * 記事番号をゼロ埋め3桁にして article-XXX の id で検索する
+ */
+function resolvePlaceholderLinks(body: string, allArticles: Article[]): string {
+  // （※内部リンク：#X記事へ）→ 実際のMarkdownリンクに変換
+  let result = body.replace(/（※内部リンク：#(\d+)記事へ）/g, (_match, num) => {
+    const paddedNum = String(parseInt(num, 10)).padStart(3, '0');
+    const articleId = `article-${paddedNum}`;
+    const target = allArticles.find((a) => a.id === articleId);
+    if (target) {
+      return `[${target.title}](/articles/${target.slug}/)`;
+    }
+    // 対応記事が見つからない場合は空文字（broken linkを避ける）
+    return '';
+  });
+
+  // （※アフィリエイトリンク設置箇所）→ 削除（CTAはページレイアウト側で描画）
+  result = result.replace(/（※アフィリエイトリンク設置箇所）/g, '');
+
+  return result;
+}
+
+/**
  * 記事本文のMarkdownに内部リンクを自動挿入する
+ * - （※内部リンク：#X記事へ）プレースホルダーを実リンクに変換
  * - 各キーワードは最初の1回のみリンク化
  * - 既存リンク内のテキストは保護
  * - テーブル行（|で始まる行）は変更しない
@@ -13,9 +37,10 @@ export function addInternalLinks(
   currentSlug: string,
   allArticles: Article[]
 ): string {
+  // 0. プレースホルダーリンクを実際のMarkdownリンクに変換
   // 1. コードブロックをプレースホルダーで保護
   const codeBlocks: string[] = [];
-  let result = body.replace(/```[\s\S]*?```/g, (match) => {
+  let result = resolvePlaceholderLinks(body, allArticles).replace(/```[\s\S]*?```/g, (match) => {
     const idx = codeBlocks.length;
     codeBlocks.push(match);
     return `__CODE_${idx}__`;

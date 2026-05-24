@@ -63,3 +63,8 @@ export interface PageData {
   avgSalary: number;    // その都道府県×工種の合算年収
   lastUpdated: string;
 }
+
+export interface SuccessPoint {
+  title: string;
+  body: string;
+}

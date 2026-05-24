@@ -22,3 +22,10 @@ Thumbs.db
 # エディタ
 .vscode/
 .idea/
+
+# 機密情報・内部資料（APIキー・ASP情報含むため）
+施工管理サイト/
+sekoukan-project-summary.md
+author-persona.md
+article-production-spec.md
+article-kw-plan-100.md

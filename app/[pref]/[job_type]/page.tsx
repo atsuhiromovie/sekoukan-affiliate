@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { PREFS, JOB_TYPES, getPrefById, getJobTypeById, getLocalAdvice } from '../../../lib/constants';
+import { PREFS, JOB_TYPES, getPrefById, getJobTypeById, getLocalAdvice, getSuccessPoints } from '../../../lib/constants';
 import {
   fetchAffiliatesFromSheets,
   fetchSalaryOverrides,
@@ -221,20 +221,7 @@ export default async function PrefJobTypePage({
             {pref.name}で{jobType.fullName}に転職するためのポイント
           </h2>
           <ol className="space-y-4">
-            {[
-              {
-                title: '施工管理特化型エージェントを複数登録する',
-                body: `一般転職サービスではなく、建設・施工管理に特化したエージェントを選ぶことで、${pref.name}の${jobType.fullName}求人に強いアドバイザーに担当してもらえます。複数登録することで選択肢が広がります。`,
-              },
-              {
-                title: `${jobType.license}の取得を目指す`,
-                body: `資格があることで求人の幅が大幅に広がり、年収交渉でも有利になります。特に1級は管理職候補として高待遇での転職が狙えます。`,
-              },
-              {
-                title: '職務経歴書で「現場規模・人数管理」を具体的に記載',
-                body: `施工管理の転職では「どんな規模の現場を・何人のチームで・どのように管理したか」が重視されます。数字を使った具体的な記載が内定率を高めます。`,
-              },
-            ].map((item, i) => (
+            {getSuccessPoints(jobType.id, pref.id).map((item, i) => (
               <li key={i} className="flex gap-4 bg-white border border-gray-100 rounded-xl p-5">
                 <span className="shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-sm">
                   {i + 1}

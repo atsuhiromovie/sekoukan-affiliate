@@ -75,13 +75,16 @@ export default async function PrefJobTypePage({
     fetchFAQs(),
   ]);
 
-  // 対応工種・地域でフィルタリング
+  // 対応工種・地域でフィルタリング（id重複排除）
+  const seenIds = new Set<string>();
   const affiliates: AffiliateItem[] = allAffiliates.filter((item) => {
     const regionOk =
       item.regions.includes('all') || item.regions.includes(pref.id);
     const jobOk =
       item.jobTypes.includes('all') || item.jobTypes.includes(jobType.id);
-    return regionOk && jobOk;
+    if (!regionOk || !jobOk || seenIds.has(item.id)) return false;
+    seenIds.add(item.id);
+    return true;
   });
 
   // 平均年収（スプレッドシート優先 → マスターデータ）

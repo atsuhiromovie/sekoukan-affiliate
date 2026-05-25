@@ -110,7 +110,7 @@ export function getLocalAdvice(jobTypeId: string, prefId: string): string {
   const jobType = getJobTypeById(jobTypeId);
   if (!pref || !jobType) return '';
 
-  const demandPhrase: Record<string, string> = {
+  const demandPhrase: Record<'high' | 'medium' | 'low', string> = {
     high:   `${pref.name}は施工管理の求人需要が特に旺盛で、好条件の案件が多数出ています。`,
     medium: `${pref.name}は安定した施工管理需要があり、転職タイミングを選べば好条件の求人に巡り会えます。`,
     low:    `${pref.name}は求人数こそ多くないものの、地域密着型エージェントを活用することで非公開求人にアクセスできます。`,

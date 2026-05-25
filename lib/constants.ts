@@ -1,4 +1,4 @@
-import { PrefData, JobTypeData } from './types';
+import { PrefData, JobTypeData, SuccessPoint } from './types';
 
 // ===== 47都道府県マスター =====
 // avgSalary: 施工管理の都道府県別平均年収（概算・万円）
@@ -127,6 +127,75 @@ export function getLocalAdvice(jobTypeId: string, prefId: string): string {
   };
 
   return `${demandPhrase[pref.demandLevel]}${trendPhrase}${jobAdvice[jobTypeId] ?? ''}`;
+}
+
+/** 都道府県×工種データから転職成功ポイント3項目を生成する */
+export function getSuccessPoints(jobTypeId: string, prefId: string): SuccessPoint[] {
+  const pref = getPrefById(prefId);
+  const jobType = getJobTypeById(jobTypeId);
+  if (!pref || !jobType) return [];
+
+  const point1ByDemand: Record<'high' | 'medium' | 'low', SuccessPoint> = {
+    high: {
+      title: '施工管理特化エージェントに今すぐ複数登録する',
+      body: `${pref.name}は求人需要が旺盛で、好条件の求人は早期に埋まります。今すぐ施工管理特化型エージェントに2〜3社同時登録して、非公開求人を押さえることが転職成功の第一歩です。`,
+    },
+    medium: {
+      title: '地域特化型と全国型の両方のエージェントに登録する',
+      body: `${pref.name}の転職では、地域密着型エージェント（地場ゼネコン求人に強い）と全国型エージェント（大手・中堅案件に強い）を併用することで、選択肢を最大化できます。`,
+    },
+    low: {
+      title: '全国展開型エージェントも併用して求人の選択肢を広げる',
+      body: `${pref.name}は求人数が限られるため、地域特化型だけでなく全国展開型エージェントも並行して使い、隣接エリアの求人まで視野に入れることが重要です。`,
+    },
+  };
+
+  const point2ByJobType: Record<string, SuccessPoint> = {
+    architecture: {
+      title: `${jobType.license}の取得・アピールを最優先にする`,
+      body: `1級建築施工管理技士は大手ゼネコンへの転職で必須条件になることが多く、取得だけで年収交渉の余地が大幅に広がります。未取得なら取得計画を、取得済みなら担当した工事規模・種別を具体的にアピールしましょう。`,
+    },
+    civil: {
+      title: `${jobType.license}＋専門分野経験を組み合わせてアピールする`,
+      body: `1級土木施工管理技士に加えて、舗装・橋梁・トンネルなど専門性の高い施工経験があると希少人材として評価されます。施工計画書の作成経験も重要なアピールポイントです。`,
+    },
+    electrical: {
+      title: `${jobType.license}を武器に売り手市場で強気に交渉する`,
+      body: `電気工事施工管理は全工種で最も人材不足が深刻です。1級電気工事施工管理技士があれば年収600万円超えも現実的で、複数社から内定を取って条件を比較する強気の戦略が有効です。`,
+    },
+    pipe: {
+      title: `${jobType.license}＋BIM・省エネ設備経験で差別化する`,
+      body: `管工事施工管理は省エネ・ZEB対応の需要増で注目度が上昇中です。CAD・BIM操作スキルと省エネ設備の施工経験を組み合わせることで、年収交渉のレバレッジが大きく高まります。`,
+    },
+    landscaping: {
+      title: `${jobType.license}と公共造園工事の実績を前面に出す`,
+      body: `造園施工管理は都市緑化・グリーンインフラ需要の高まりで求人が拡大中です。1級造園施工管理技士の資格と公園・緑地などの公共造園工事の実績は転職時の最大の差別化ポイントになります。`,
+    },
+  };
+
+  const point3ByDemand: Record<'high' | 'medium' | 'low', SuccessPoint> = {
+    high: {
+      title: '複数社に同時並行で応募して条件を比較する',
+      body: `求人が豊富な${pref.name}では、1社ずつ応募するより複数社に並行して応募することで内定が競合し、年収や条件の交渉余地が生まれます。エージェント経由で一括管理すると効率的です。`,
+    },
+    medium: {
+      title: '職務経歴書に数字・規模・人数を具体的に記載して差をつける',
+      body: `「どんな規模の現場を・何人のチームで・どのような課題を解決しながら管理したか」を数字で表現することで、書類選考の通過率が大幅に上がります。エージェントに添削を依頼するのも有効です。`,
+    },
+    low: {
+      title: '希望エリアを隣県まで広げ求人数を最大化する',
+      body: `求人数が限られる${pref.name}では、隣接する都道府県や通勤圏内の求人まで視野を広げることで選択肢が一気に増えます。転勤許容度を上げることが収入アップへの近道になるケースも多いです。`,
+    },
+  };
+
+  return [
+    point1ByDemand[pref.demandLevel],
+    point2ByJobType[jobTypeId] ?? {
+      title: `${jobType.license}の取得を目指す`,
+      body: `資格があることで求人の幅が大幅に広がり、年収交渉でも有利になります。特に1級は管理職候補として高待遇での転職が狙えます。`,
+    },
+    point3ByDemand[pref.demandLevel],
+  ];
 }
 
 // ===== 記事カテゴリ 英語ID → 日本語 =====

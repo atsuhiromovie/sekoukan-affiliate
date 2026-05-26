@@ -95,17 +95,13 @@ export default function RegionAccordion() {
                     <Link
                       key={pref.id}
                       href={`/${pref.id}/`}
-                      className="rounded-lg p-3 border hover:border-amber-400 transition-colors"
-                      style={{
-                        backgroundColor: '#1a2744',
-                        borderColor: 'rgba(255,255,255,0.08)',
-                        textDecoration: 'none',
-                      }}
+                      className="rounded-lg p-3 border border-gray-200 bg-white hover:border-amber-400 transition-colors"
+                      style={{ textDecoration: 'none' }}
                     >
-                      <div className="text-sm font-medium" style={{ color: '#e8edf2' }}>
+                      <div className="text-sm font-medium text-gray-800">
                         {pref.name}
                       </div>
-                      <div className="text-xs mt-0.5" style={{ color: '#7a96aa' }}>
+                      <div className="text-xs mt-0.5 text-gray-400">
                         約{pref.avgSalary}万円〜
                       </div>
                     </Link>

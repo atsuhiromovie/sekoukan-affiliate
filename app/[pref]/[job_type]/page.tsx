@@ -161,10 +161,31 @@ export default async function PrefJobTypePage({
           />
         </div>
 
-        {/* 編集部メモ（Sheetsに入力がある場合のみ表示） */}
+        {/* 編集部メモ吹き出し（Sheetsに入力がある場合のみ表示） */}
         {editorNote && (
-          <div className="bg-gray-50 border-l-4 border-gray-300 pl-4 py-3 mb-8 rounded-r-lg">
-            <p className="text-sm text-gray-700 leading-relaxed">{editorNote}</p>
+          <div className="bg-gray-50 rounded-xl p-4 mb-8 flex items-start gap-3">
+            <img
+              src={`/images/characters/character-${jobType.id}.png`}
+              alt={`${jobType.name}担当アドバイザー`}
+              width={64}
+              height={64}
+              className="shrink-0 rounded-full border-2 border-gray-200 object-cover"
+            />
+            <div className="relative flex-1
+              before:content-[''] before:absolute before:top-4
+              before:-left-2 before:w-0 before:h-0
+              before:border-t-[7px] before:border-t-transparent
+              before:border-b-[7px] before:border-b-transparent
+              before:border-r-[8px] before:border-r-gray-200
+              after:content-[''] after:absolute after:top-[17px]
+              after:-left-[7px] after:w-0 after:h-0 after:z-10
+              after:border-t-[6px] after:border-t-transparent
+              after:border-b-[6px] after:border-b-transparent
+              after:border-r-[7px] after:border-r-white">
+              <div className="bg-white border border-gray-200 rounded-lg px-4 py-3">
+                <p className="text-sm text-gray-700 leading-relaxed">{editorNote}</p>
+              </div>
+            </div>
           </div>
         )}
 

@@ -87,10 +87,10 @@ export default function RegionAccordion() {
             </button>
             {isOpen && (
               <div
-                className="px-5 pb-5 pt-2 border-t"
+                className="px-5 pb-5 pt-2 border-t bg-slate-800"
                 style={{ borderColor: 'rgba(255,255,255,0.06)' }}
               >
-                <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                <div className="grid grid-cols-3 gap-2">
                   {prefs.map((pref) => (
                     <Link
                       key={pref.id}

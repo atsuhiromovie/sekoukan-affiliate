@@ -1,9 +1,10 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Metadata } from 'next';
-import { PREFS, JOB_TYPES, ARTICLE_CATEGORIES } from '../lib/constants';
+import { JOB_TYPES, ARTICLE_CATEGORIES } from '../lib/constants';
 import PrefJobSelector from '../components/PrefJobSelector';
 import AffiliateCta from '../components/AffiliateCta';
+import RegionAccordion from '../components/RegionAccordion';
 import { fetchAffiliatesFromSheets, fetchArticles } from '../lib/sheets';
 
 export const metadata: Metadata = {
@@ -12,20 +13,6 @@ export const metadata: Metadata = {
     '47都道府県×5工種の求人に対応。建築・土木・電気工事・管工事・造園の施工管理技士向けおすすめエージェントを比較。転職のコツ・平均年収データも掲載。',
   alternates: { canonical: 'https://sekoukan-navi.com/' },
 };
-
-const REGION_EN: Record<string, string> = {
-  北海道: 'HOKKAIDO',
-  東北: 'TOHOKU',
-  関東: 'KANTO',
-  中部: 'CHUBU',
-  近畿: 'KINKI',
-  中国: 'CHUGOKU',
-  四国: 'SHIKOKU',
-  九州: 'KYUSHU',
-  沖縄: 'OKINAWA',
-};
-
-const REGIONS = ['北海道', '東北', '関東', '中部', '近畿', '中国', '四国', '九州', '沖縄'];
 
 const SITE_FEATURES = [
   {
@@ -77,11 +64,6 @@ export default async function HomePage() {
     .filter((a) => a.status === 'published')
     .sort((a, b) => (b.publishedAt ?? '').localeCompare(a.publishedAt ?? ''))
     .slice(0, 3);
-
-  const prefsByRegion = REGIONS.map((region) => ({
-    region,
-    prefs: PREFS.filter((p) => p.region === region),
-  })).filter((r) => r.prefs.length > 0);
 
   return (
     <>
@@ -394,43 +376,7 @@ export default async function HomePage() {
           {/* ===== 地域別都道府県一覧 ===== */}
           <section className="pb-4">
             <SectionHead en="REGION" ja="地域から探す" />
-            {prefsByRegion.map(({ region, prefs }) => {
-              const regionEn = REGION_EN[region] ?? region.toUpperCase();
-              return (
-                <div key={region} className="mb-8">
-                  <h2
-                    className="text-xs font-semibold mb-3 pb-1 inline-block border-b-2"
-                    style={{
-                      fontFamily: 'Oswald, sans-serif',
-                      color: '#1a2744',
-                      borderColor: '#f59e0b',
-                      letterSpacing: '0.1em',
-                    }}
-                  >
-                    {regionEn}
-                    <span className="mx-2" style={{ color: '#f59e0b' }}>—</span>
-                    {region}地方
-                  </h2>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-                    {prefs.map((pref) => (
-                      <Link
-                        key={pref.id}
-                        href={`/${pref.id}/`}
-                        className="bg-white border rounded-lg p-3 hover:shadow-md transition-all text-sm"
-                        style={{ borderColor: '#e2e6ef' }}
-                      >
-                        <div className="font-medium" style={{ color: '#1a2744' }}>
-                          {pref.name}
-                        </div>
-                        <div className="text-xs mt-0.5" style={{ color: '#9ca3af' }}>
-                          約{pref.avgSalary}万円〜
-                        </div>
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              );
-            })}
+            <RegionAccordion />
           </section>
 
           {/* ===== 工種別リンク ===== */}

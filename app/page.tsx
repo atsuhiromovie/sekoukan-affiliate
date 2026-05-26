@@ -457,7 +457,7 @@ export default async function HomePage() {
                     className="text-sm font-medium hover:opacity-80 transition-opacity"
                     style={{ color: '#1a2744' }}
                   >
-                    東京の{job.name}求人を見る{' '}
+                    {job.fullName}の求人を見る{' '}
                     <span style={{ color: '#f59e0b' }}>→</span>
                   </Link>
                 </div>

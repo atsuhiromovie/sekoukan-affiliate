@@ -95,7 +95,7 @@ export default function RegionAccordion() {
                     <Link
                       key={pref.id}
                       href={`/${pref.id}/`}
-                      className="rounded-lg p-3 border border-gray-200 bg-white hover:border-amber-400 transition-colors"
+                      className="rounded-lg p-3 border border-gray-200 bg-white cursor-pointer hover:bg-blue-50 hover:border-blue-300 transition-colors duration-200"
                       style={{ textDecoration: 'none' }}
                     >
                       <div className="text-sm font-medium text-gray-800">

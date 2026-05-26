@@ -19,16 +19,19 @@ const SITE_FEATURES = [
     icon: '🗾',
     title: '地域別の求人情報',
     desc: '47都道府県×5工種、235ページ。お住まいの地域と工種で絞り込める専門ナビ。',
+    href: '/#region',
   },
   {
     icon: '📊',
     title: '年収シミュレーター',
     desc: '現在の工種と年収を入力すると、転職で上昇する可能性のある年収額を自動計算。',
+    href: '/simulator',
   },
   {
     icon: '📝',
     title: '転職ノウハウ記事',
     desc: '複数回の転職経験をもとに編集した、施工管理技士向けの実践的な転職コラム。',
+    href: '/articles',
   },
 ];
 
@@ -169,10 +172,11 @@ export default async function HomePage() {
             <SectionHead en="FEATURES" ja="このサイトでできること" />
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               {SITE_FEATURES.map((f) => (
-                <div
+                <Link
                   key={f.title}
-                  className="rounded-xl p-5 border"
-                  style={{ backgroundColor: '#111d35', borderColor: 'rgba(255,255,255,0.08)' }}
+                  href={f.href}
+                  className="rounded-xl p-5 border cursor-pointer hover:opacity-80 transition duration-200"
+                  style={{ backgroundColor: '#111d35', borderColor: 'rgba(255,255,255,0.08)', textDecoration: 'none', display: 'block' }}
                 >
                   <div className="text-2xl mb-3">{f.icon}</div>
                   <div className="font-bold text-sm mb-2" style={{ color: '#e8edf2' }}>
@@ -181,7 +185,7 @@ export default async function HomePage() {
                   <div className="text-xs leading-relaxed" style={{ color: '#7a96aa' }}>
                     {f.desc}
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           </section>
@@ -374,7 +378,7 @@ export default async function HomePage() {
           </section>
 
           {/* ===== 地域別都道府県一覧 ===== */}
-          <section className="pb-4">
+          <section id="region" className="pb-4">
             <SectionHead en="REGION" ja="地域から探す" />
             <RegionAccordion />
           </section>

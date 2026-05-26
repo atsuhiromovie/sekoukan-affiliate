@@ -6,8 +6,7 @@
  * シート構造の変更時はカラムマッピングの更新が必要
  */
 
-import { AffiliateItem, Article, FAQItem, PrefData } from './types';
-import { PREFS, JOB_TYPES, getPrefById, getJobTypeById } from './constants';
+import { AffiliateItem, Article, FAQItem } from './types';
 
 // ===== 環境変数チェック =====
 const SPREADSHEET_ID = process.env.GOOGLE_SPREADSHEET_ID;
@@ -148,6 +147,38 @@ export async function fetchSalaryOverrides(): Promise<Map<string, number>> {
     });
   } catch (err) {
     console.error('[Sheets] 年収データ取得エラー:', err);
+  }
+
+  return map;
+}
+
+/**
+ * 編集部メモをスプレッドシートから取得
+ * シート名: "pref_salary"
+ * カラム順: pref_id | job_type_id | avg_salary | editor_note
+ */
+export async function fetchEditorNotes(): Promise<Map<string, string>> {
+  const map = new Map<string, string>();
+
+  if (USE_LOCAL_FALLBACK) return map;
+
+  try {
+    const range = encodeURIComponent('pref_salary!A2:D500');
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${range}?key=${API_KEY}`;
+
+    const res = await fetch(url, { next: { revalidate: false } });
+    if (!res.ok) throw new Error(`Sheets API error: ${res.status}`);
+
+    const json = await res.json();
+    const rows: string[][] = json.values || [];
+
+    rows.forEach((row) => {
+      if (row[0] && row[1] && row[3]) {
+        map.set(`${row[0]}_${row[1]}`, row[3]);
+      }
+    });
+  } catch (err) {
+    console.error('[Sheets] editor_note取得エラー:', err);
   }
 
   return map;

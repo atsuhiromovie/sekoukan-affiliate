@@ -6,6 +6,7 @@ import {
   fetchAffiliatesFromSheets,
   fetchSalaryOverrides,
   fetchFAQs,
+  fetchEditorNotes,
   generateDefaultFAQs,
   DEFAULT_AFFILIATES,
 } from '../../../lib/sheets';
@@ -69,10 +70,11 @@ export default async function PrefJobTypePage({
   if (!pref || !jobType) notFound();
 
   // ビルド時にGoogle Sheetsからデータ取得
-  const [allAffiliates, salaryOverrides, faqMap] = await Promise.all([
+  const [allAffiliates, salaryOverrides, faqMap, editorNoteMap] = await Promise.all([
     fetchAffiliatesFromSheets(),
     fetchSalaryOverrides(),
     fetchFAQs(),
+    fetchEditorNotes(),
   ]);
 
   // 対応工種・地域でフィルタリング（id重複排除）
@@ -96,6 +98,9 @@ export default async function PrefJobTypePage({
   const faqs =
     faqMap.get(salaryKey) ??
     generateDefaultFAQs(pref.name, jobType.fullName, avgSalary);
+
+  // 編集部メモ（未入力の場合は非表示）
+  const editorNote = editorNoteMap.get(salaryKey) ?? '';
 
   const pageUrl = `${siteUrl}/${pref.id}/${jobType.id}/`;
 
@@ -155,6 +160,13 @@ export default async function PrefJobTypePage({
             className="col-span-2 sm:col-span-1"
           />
         </div>
+
+        {/* 編集部メモ（Sheetsに入力がある場合のみ表示） */}
+        {editorNote && (
+          <div className="bg-gray-50 border-l-4 border-gray-300 pl-4 py-3 mb-8 rounded-r-lg">
+            <p className="text-sm text-gray-700 leading-relaxed">{editorNote}</p>
+          </div>
+        )}
 
         {/* ===== 比較表（収益の核心） ===== */}
         <ComparisonTable

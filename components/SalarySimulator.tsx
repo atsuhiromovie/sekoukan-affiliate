@@ -106,9 +106,9 @@ export default function SalarySimulator() {
             className="w-full rounded-lg px-4 py-2.5 text-sm"
             style={{ backgroundColor: '#1a2744', color: '#e8edf2', border: '1px solid rgba(255,255,255,0.15)' }}
           >
-            <option value="none">資格なし（×1.05）</option>
-            <option value="2kyu">2級施工管理技士（×1.08）</option>
-            <option value="1kyu">1級施工管理技士（×1.15）</option>
+            <option value="none">資格なし</option>
+            <option value="2kyu">2級施工管理技士</option>
+            <option value="1kyu">1級施工管理技士</option>
           </select>
         </div>
 

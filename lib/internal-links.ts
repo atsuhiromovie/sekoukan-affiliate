@@ -28,6 +28,16 @@ function resolvePlaceholderLinks(body: string, allArticles: Article[]): string {
     return titleHint.trim();
   });
 
+  // パターン3: （内部リンク：タイトル文字列）→ タイトル部分一致で検索（※なし・番号なし）
+  result = result.replace(/（内部リンク：([^）]+)）/g, (_match, titleHint) => {
+    const hint = titleHint.trim();
+    const target = allArticles.find(
+      (a) => a.title && (a.title === hint || a.title.includes(hint) || hint.includes(a.title))
+    );
+    if (target) return `[${target.title}](/articles/${target.slug}/)`;
+    return hint;
+  });
+
   // （※アフィリエイトリンク設置箇所）→ 削除（CTAはページレイアウト側で描画）
   result = result.replace(/（※アフィリエイトリンク設置箇所）/g, '');
 

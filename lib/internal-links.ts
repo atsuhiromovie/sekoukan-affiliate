@@ -6,16 +6,26 @@ import { Article } from './types';
  * 記事番号をゼロ埋め3桁にして article-XXX の id で検索する
  */
 function resolvePlaceholderLinks(body: string, allArticles: Article[]): string {
-  // （※内部リンク：#X記事へ）→ 実際のMarkdownリンクに変換
+  // パターン1: （※内部リンク：#X記事へ）→ article-XXX IDで検索
   let result = body.replace(/（※内部リンク：#(\d+)記事へ）/g, (_match, num) => {
     const paddedNum = String(parseInt(num, 10)).padStart(3, '0');
-    const articleId = `article-${paddedNum}`;
-    const target = allArticles.find((a) => a.id === articleId);
-    if (target) {
-      return `[${target.title}](/articles/${target.slug}/)`;
-    }
-    // 対応記事が見つからない場合は空文字（broken linkを避ける）
+    const target = allArticles.find((a) => a.id === `article-${paddedNum}`);
+    if (target) return `[${target.title}](/articles/${target.slug}/)`;
     return '';
+  });
+
+  // パターン2: （※内部リンク：#27 タイトル文字列）→ IDまたはタイトルで検索
+  result = result.replace(/（※内部リンク：#(\d+)\s+([^）]+)）/g, (_match, num, titleHint) => {
+    const paddedNum = String(parseInt(num, 10)).padStart(3, '0');
+    // まずIDで検索
+    let target = allArticles.find((a) => a.id === `article-${paddedNum}`);
+    // なければタイトルの部分一致で検索
+    if (!target) {
+      target = allArticles.find((a) => a.title && a.title.includes(titleHint.split('｜')[0].trim()));
+    }
+    if (target) return `[${target.title}](/articles/${target.slug}/)`;
+    // 記事が未公開・未存在の場合はリンクなしのテキストだけ残す
+    return titleHint.trim();
   });
 
   // （※アフィリエイトリンク設置箇所）→ 削除（CTAはページレイアウト側で描画）

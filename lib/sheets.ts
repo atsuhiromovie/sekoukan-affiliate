@@ -92,7 +92,7 @@ export async function fetchAffiliatesFromSheets(): Promise<AffiliateItem[]> {
     const range = encodeURIComponent('affiliate_items!A2:L100');
     const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${range}?key=${API_KEY}`;
 
-    const res = await fetch(url, { cache: 'no-store' }); // SSGなのでrevalidate不要
+    const res = await fetch(url, { next: { revalidate: false } }); // SSGなのでrevalidate不要
     if (!res.ok) throw new Error(`Sheets API error: ${res.status}`);
 
     const json = await res.json();
@@ -134,7 +134,7 @@ export async function fetchSalaryOverrides(): Promise<Map<string, number>> {
     const range = encodeURIComponent('pref_salary!A2:C500');
     const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${range}?key=${API_KEY}`;
 
-    const res = await fetch(url, { cache: 'no-store' });
+    const res = await fetch(url, { next: { revalidate: false } });
     if (!res.ok) throw new Error(`Sheets API error: ${res.status}`);
 
     const json = await res.json();
@@ -166,7 +166,7 @@ export async function fetchEditorNotes(): Promise<Map<string, string>> {
     const range = encodeURIComponent('pref_salary!A2:D500');
     const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${range}?key=${API_KEY}`;
 
-    const res = await fetch(url, { cache: 'no-store' });
+    const res = await fetch(url, { next: { revalidate: false } });
     if (!res.ok) throw new Error(`Sheets API error: ${res.status}`);
 
     const json = await res.json();
@@ -198,7 +198,7 @@ export async function fetchFAQs(): Promise<Map<string, FAQItem[]>> {
     const range = encodeURIComponent('faqs!A2:D500');
     const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${range}?key=${API_KEY}`;
 
-    const res = await fetch(url, { cache: 'no-store' });
+    const res = await fetch(url, { next: { revalidate: false } });
     if (!res.ok) throw new Error(`Sheets API error: ${res.status}`);
 
     const json = await res.json();
@@ -262,7 +262,7 @@ export async function fetchArticles(): Promise<Article[]> {
     const range = encodeURIComponent('articles!A2:K500');
     const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${range}?key=${API_KEY}`;
 
-    const res = await fetch(url, { cache: 'no-store' });
+    const res = await fetch(url, { next: { revalidate: false } });
     if (!res.ok) throw new Error(`Sheets API error: ${res.status}`);
 
     const json = await res.json();

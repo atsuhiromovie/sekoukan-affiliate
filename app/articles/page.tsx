@@ -12,7 +12,10 @@ export const metadata: Metadata = {
 };
 
 export default async function ArticlesPage() {
-  const articles = await fetchArticles();
+  const allArticles = await fetchArticles();
+  const articles = allArticles.sort(
+    (a, b) => (b.publishedAt ?? '').localeCompare(a.publishedAt ?? '')
+  );
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-10">

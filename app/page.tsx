@@ -28,6 +28,12 @@ const SITE_FEATURES = [
     href: '/simulator',
   },
   {
+    icon: '✏️',
+    title: '肩書き翻訳ツール',
+    desc: '職務経歴書の「現場監督」「施工管理」、応募先別に最適な書き方が変わります。あなたの経験を入力すると、大手・異業種など応募先タイプ別に肩書き案をAIが提案。',
+    href: '/tools/title-translator',
+  },
+  {
     icon: '📝',
     title: '転職ノウハウ記事',
     desc: '複数回の転職経験をもとに編集した、施工管理技士向けの実践的な転職コラム。',
@@ -170,7 +176,7 @@ export default async function HomePage() {
           {/* ===== サイトの特徴 ===== */}
           <section className="py-10">
             <SectionHead en="FEATURES" ja="このサイトでできること" />
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
               {SITE_FEATURES.map((f) => (
                 <Link
                   key={f.title}

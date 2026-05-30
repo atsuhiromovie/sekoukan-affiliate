@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Metadata } from 'next';
+import { MapPin, TrendingUp, Sparkles, BookOpen } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import { JOB_TYPES, ARTICLE_CATEGORIES } from '../lib/constants';
 import PrefJobSelector from '../components/PrefJobSelector';
 import AffiliateCta from '../components/AffiliateCta';
@@ -14,29 +16,36 @@ export const metadata: Metadata = {
   alternates: { canonical: 'https://sekoukan-navi.com/' },
 };
 
-const SITE_FEATURES = [
+const SITE_FEATURES: Array<{
+  Icon: LucideIcon;
+  title: string;
+  desc: string;
+  href: string;
+  highlight?: boolean;
+}> = [
   {
-    icon: '🗾',
+    Icon: MapPin,
     title: '地域別の求人情報',
-    desc: '47都道府県×5工種、235ページ。お住まいの地域と工種で絞り込める専門ナビ。',
+    desc: '47都道府県×5工種、235ページ。地域と工種で絞り込める専門ナビ。',
     href: '/#region',
   },
   {
-    icon: '📊',
+    Icon: TrendingUp,
     title: '年収シミュレーター',
-    desc: '現在の工種と年収を入力すると、転職で上昇する可能性のある年収額を自動計算。',
+    desc: '工種・資格・経験年数を入力すると、転職後の想定年収をすぐに確認。',
     href: '/simulator',
   },
   {
-    icon: '✏️',
+    Icon: Sparkles,
     title: '肩書き翻訳ツール',
-    desc: '職務経歴書の「現場監督」「施工管理」、応募先別に最適な書き方が変わります。あなたの経験を入力すると、大手・異業種など応募先タイプ別に肩書き案をAIが提案。',
+    desc: '同じ経験でも応募先で書き方は変わる。AIが職務経歴書の肩書き案を2〜3パターン提案。',
     href: '/tools/title-translator',
+    highlight: true,
   },
   {
-    icon: '📝',
+    Icon: BookOpen,
     title: '転職ノウハウ記事',
-    desc: '複数回の転職経験をもとに編集した、施工管理技士向けの実践的な転職コラム。',
+    desc: '施工管理技士向けの転職コラム。資格・年収・エージェント活用術を掲載。',
     href: '/articles',
   },
 ];
@@ -85,6 +94,10 @@ export default async function HomePage() {
         .anim-2 { animation: fadeUp 0.6s 0.10s ease both; }
         .anim-3 { animation: fadeUp 0.6s 0.20s ease both; }
         .anim-4 { animation: fadeUp 0.6s 0.30s ease both; }
+        .feature-card:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 14px 32px rgba(0,0,0,0.32);
+        }
       `}</style>
 
       <div>
@@ -176,19 +189,39 @@ export default async function HomePage() {
           {/* ===== サイトの特徴 ===== */}
           <section className="py-10">
             <SectionHead en="FEATURES" ja="このサイトでできること" />
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 items-stretch">
               {SITE_FEATURES.map((f) => (
                 <Link
                   key={f.title}
                   href={f.href}
-                  className="rounded-xl p-5 border cursor-pointer hover:opacity-80 transition duration-200"
-                  style={{ backgroundColor: '#111d35', borderColor: 'rgba(255,255,255,0.08)', textDecoration: 'none', display: 'block' }}
+                  className="feature-card flex flex-col rounded-xl p-5 border transition-all duration-200"
+                  style={{
+                    backgroundColor: '#111d35',
+                    borderColor: f.highlight ? 'rgba(245,158,11,0.45)' : 'rgba(255,255,255,0.08)',
+                    textDecoration: 'none',
+                  }}
                 >
-                  <div className="text-2xl mb-3">{f.icon}</div>
+                  {/* アイコンチップ */}
+                  <div className="relative self-start mb-4">
+                    <div
+                      className="flex items-center justify-center rounded-lg"
+                      style={{ width: '44px', height: '44px', backgroundColor: '#1a3a5c' }}
+                    >
+                      <f.Icon size={20} color="#f59e0b" strokeWidth={1.75} />
+                    </div>
+                    {f.highlight && (
+                      <span
+                        className="absolute -top-1.5 -right-1.5 font-bold rounded leading-none"
+                        style={{ backgroundColor: '#f59e0b', color: '#1a2744', fontSize: '0.6rem', padding: '2px 5px' }}
+                      >
+                        AI
+                      </span>
+                    )}
+                  </div>
                   <div className="font-bold text-sm mb-2" style={{ color: '#e8edf2' }}>
                     {f.title}
                   </div>
-                  <div className="text-xs leading-relaxed" style={{ color: '#7a96aa' }}>
+                  <div className="text-xs leading-relaxed flex-1" style={{ color: '#7a96aa' }}>
                     {f.desc}
                   </div>
                 </Link>

@@ -38,6 +38,19 @@ function resolvePlaceholderLinks(body: string, allArticles: Article[]): string {
     return hint;
   });
 
+  // パターン4: （ツールリンク：tool-slug）→ ツールページへのリンク
+  const TOOL_MAP: Record<string, { title: string; href: string }> = {
+    'title-translator': {
+      title: '職務経歴書の「肩書き」翻訳ツール',
+      href: '/tools/title-translator/',
+    },
+  };
+  result = result.replace(/（ツールリンク：([^）]+)）/g, (_match, slug) => {
+    const tool = TOOL_MAP[slug.trim()];
+    if (tool) return `[${tool.title}](${tool.href})`;
+    return '';
+  });
+
   // （※アフィリエイトリンク設置箇所）→ 削除（CTAはページレイアウト側で描画）
   result = result.replace(/（※アフィリエイトリンク設置箇所）/g, '');
 

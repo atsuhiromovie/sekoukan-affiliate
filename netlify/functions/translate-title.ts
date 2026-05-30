@@ -111,26 +111,23 @@ export const handler = async (event: HandlerEvent) => {
   callCount++;
 
   try {
-    const response = await (client.messages.create as Function)(
-      {
-        model: 'claude-haiku-4-5-20251001',
-        max_tokens: 800,
-        system: [
-          {
-            type: 'text',
-            text: SYSTEM_PROMPT,
-            cache_control: { type: 'ephemeral' },
-          },
-        ],
-        messages: [
-          {
-            role: 'user',
-            content: `応募先タイプ：${target}\n保有資格：${qual}\n経験（求職者の入力そのまま）：\n${trimmedExp}`,
-          },
-        ],
-      },
-      { headers: { 'anthropic-beta': 'prompt-caching-2024-07-31' } },
-    );
+    const response = await (client.messages.create as Function)({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 800,
+      system: [
+        {
+          type: 'text',
+          text: SYSTEM_PROMPT,
+          cache_control: { type: 'ephemeral' },
+        },
+      ],
+      messages: [
+        {
+          role: 'user',
+          content: `応募先タイプ：${target}\n保有資格：${qual}\n経験（求職者の入力そのまま）：\n${trimmedExp}`,
+        },
+      ],
+    });
 
     // トークン使用量ログ（コスト・キャッシュ確認用）
     console.log('[translate-title] usage:', JSON.stringify(response.usage));

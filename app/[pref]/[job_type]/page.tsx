@@ -97,7 +97,7 @@ export default async function PrefJobTypePage({
   // FAQ（スプレッドシート優先 → 自動生成）
   const faqs =
     faqMap.get(salaryKey) ??
-    generateDefaultFAQs(pref.name, jobType.fullName, avgSalary);
+    generateDefaultFAQs(pref.name, jobType.fullName, avgSalary, pref.id, jobType.id);
 
   // 編集部メモ（未入力の場合は非表示）
   const editorNote = editorNoteMap.get(salaryKey) ?? '';

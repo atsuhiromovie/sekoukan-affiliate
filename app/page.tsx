@@ -334,7 +334,7 @@ export default async function HomePage() {
                 </div>
               </div>
               <Link
-                href="/about"
+                href="/about/"
                 className="inline-block mt-4 text-xs"
                 style={{
                   color: '#f59e0b',

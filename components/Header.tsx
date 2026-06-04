@@ -72,7 +72,7 @@ export default function Header() {
             転職コラム
           </a>
           <a
-            href="/about"
+            href="/about/"
             className="block px-2 py-2.5 text-sm font-medium rounded hover:bg-white hover:bg-opacity-10 transition-colors"
             style={{ color: 'rgba(255,255,255,0.9)' }}
             onClick={() => setMenuOpen(false)}

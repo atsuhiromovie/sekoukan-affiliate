@@ -321,12 +321,12 @@ export default async function ArticleDetailPage({
           // jobType のみ設定されている場合
           ctaHeading = `${jobTypeData.fullName}の転職エージェントを比較する`;
           ctaButtonLabel = 'エージェントを比較する →';
-          ctaHref = '/';
+          ctaHref = '/articles/sekoukan-agent-osusume-2026/';
         } else {
           // どちらも設定されていない場合
           ctaHeading = '転職エージェントを今すぐ比較する';
           ctaButtonLabel = 'エージェントを比較する →';
-          ctaHref = '/';
+          ctaHref = '/articles/sekoukan-agent-osusume-2026/';
         }
 
         const ctaAgentName = prefData && jobTypeData

@@ -7,6 +7,7 @@ import {
   fetchSalaryOverrides,
   fetchFAQs,
   fetchEditorNotes,
+  fetchRankingOverrides,
   generateDefaultFAQs,
   DEFAULT_AFFILIATES,
 } from '../../../lib/sheets';
@@ -70,16 +71,17 @@ export default async function PrefJobTypePage({
   if (!pref || !jobType) notFound();
 
   // ビルド時にGoogle Sheetsからデータ取得
-  const [allAffiliates, salaryOverrides, faqMap, editorNoteMap] = await Promise.all([
+  const [allAffiliates, salaryOverrides, faqMap, editorNoteMap, rankingOverrides] = await Promise.all([
     fetchAffiliatesFromSheets(),
     fetchSalaryOverrides(),
     fetchFAQs(),
     fetchEditorNotes(),
+    fetchRankingOverrides(),
   ]);
 
   // 対応工種・地域でフィルタリング（id重複排除）
   const seenIds = new Set<string>();
-  const affiliates: AffiliateItem[] = allAffiliates.filter((item) => {
+  const filtered: AffiliateItem[] = allAffiliates.filter((item) => {
     const regionOk =
       item.regions.includes('all') || item.regions.includes(pref.id);
     const jobOk =
@@ -87,6 +89,15 @@ export default async function PrefJobTypePage({
     if (!regionOk || !jobOk || seenIds.has(item.id)) return false;
     seenIds.add(item.id);
     return true;
+  });
+
+  // 都道府県×工種のランキング上書きを適用してソート
+  const overrideKey = `${pref.id}_${jobType.id}`;
+  const overrideMap = rankingOverrides.get(overrideKey);
+  const affiliates: AffiliateItem[] = [...filtered].sort((a, b) => {
+    const rankA = overrideMap?.get(a.id) ?? a.rank ?? 999;
+    const rankB = overrideMap?.get(b.id) ?? b.rank ?? 999;
+    return rankA - rankB;
   });
 
   // 平均年収（スプレッドシート優先 → マスターデータ）

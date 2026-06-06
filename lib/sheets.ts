@@ -80,7 +80,7 @@ export const DEFAULT_AFFILIATES: AffiliateItem[] = [
 /**
  * アフィリエイト案件をスプレッドシートから取得
  * シート名: "affiliate_items"
- * カラム順: id | name | tagline | features(|区切り) | regions(|区切り) | jobTypes(|区切り) | url | badge | minSalaryUp | isRecommended | targetTags(|区切り) | reason
+ * カラム順: id | name | tagline | features(|区切り) | regions(|区切り) | jobTypes(|区切り) | url | badge | minSalaryUp | isRecommended | targetTags(|区切り) | reason | rank
  */
 export async function fetchAffiliatesFromSheets(): Promise<AffiliateItem[]> {
   if (USE_LOCAL_FALLBACK) {
@@ -89,7 +89,7 @@ export async function fetchAffiliatesFromSheets(): Promise<AffiliateItem[]> {
   }
 
   try {
-    const range = encodeURIComponent('affiliate_items!A2:L100');
+    const range = encodeURIComponent('affiliate_items!A2:M100');
     const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${range}?key=${API_KEY}`;
 
     const res = await fetch(url, { next: { revalidate: false } }); // SSGなのでrevalidate不要
@@ -113,11 +113,47 @@ export async function fetchAffiliatesFromSheets(): Promise<AffiliateItem[]> {
         isRecommended: row[9] === 'TRUE' || row[9] === '1',
         targetTags: row[10] ? row[10].split('|').filter(Boolean) : undefined,
         reason: row[11] || undefined,
+        rank: row[12] ? Number(row[12]) : undefined,
       }));
   } catch (err) {
     console.error('[Sheets] 取得エラー → フォールバックを使用:', err);
     return DEFAULT_AFFILIATES;
   }
+}
+
+/**
+ * 都道府県×工種ごとのランキング上書きデータを取得
+ * シート名: "affiliate_ranking_override"
+ * カラム順: pref_id | job_type_id | affiliate_id | rank
+ * 戻り値: Map<"pref_job_type", Map<affiliateId, rank>>
+ */
+export async function fetchRankingOverrides(): Promise<Map<string, Map<string, number>>> {
+  const map = new Map<string, Map<string, number>>();
+
+  if (USE_LOCAL_FALLBACK) return map;
+
+  try {
+    const range = encodeURIComponent('affiliate_ranking_override!A2:D500');
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${range}?key=${API_KEY}`;
+
+    const res = await fetch(url, { next: { revalidate: false } });
+    if (!res.ok) throw new Error(`Sheets API error: ${res.status}`);
+
+    const json = await res.json();
+    const rows: string[][] = json.values || [];
+
+    rows.forEach((row) => {
+      if (row[0] && row[1] && row[2] && row[3]) {
+        const key = `${row[0]}_${row[1]}`;
+        if (!map.has(key)) map.set(key, new Map());
+        map.get(key)!.set(row[2], Number(row[3]));
+      }
+    });
+  } catch (err) {
+    console.error('[Sheets] ランキング上書きデータ取得エラー:', err);
+  }
+
+  return map;
 }
 
 /**

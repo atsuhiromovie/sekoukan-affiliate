@@ -1,4 +1,4 @@
-import { FAQItem } from '../lib/types';
+import { AffiliateItem, FAQItem } from '../lib/types';
 
 interface Props {
   prefName: string;
@@ -6,20 +6,21 @@ interface Props {
   avgSalary: number;
   faqs: FAQItem[];
   pageUrl: string;
+  prefId: string;
+  affiliates?: AffiliateItem[];
 }
 
-/**
- * 構造化データ（JSON-LD）コンポーネント
- * 確信度 78% — schema.org の FAQPage・JobPosting スキーマは仕様変更の可能性あり
- * Google Search Console での定期確認を推奨
- */
 export default function StructuredData({
   prefName,
   jobTypeName,
   avgSalary,
   faqs,
   pageUrl,
+  prefId,
+  affiliates = [],
 }: Props) {
+  const siteUrl = process.env.SITE_URL || 'https://sekoukan-navi.com';
+
   // ===== FAQPage 構造化データ =====
   const faqSchema = {
     '@context': 'https://schema.org',
@@ -34,7 +35,7 @@ export default function StructuredData({
     })),
   };
 
-  // ===== BreadcrumbList 構造化データ =====
+  // ===== BreadcrumbList 構造化データ（3階層） =====
   const breadcrumbSchema = {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
@@ -43,19 +44,38 @@ export default function StructuredData({
         '@type': 'ListItem',
         position: 1,
         name: 'ホーム',
-        item: process.env.SITE_URL || 'https://sekoukan-navi.com',
+        item: siteUrl,
       },
       {
         '@type': 'ListItem',
         position: 2,
         name: `${prefName}の施工管理転職`,
+        item: `${siteUrl}/${prefId}/`,
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: `${prefName}の${jobTypeName}転職おすすめエージェント比較`,
         item: pageUrl,
       },
     ],
   };
 
-  const siteUrl = process.env.SITE_URL || 'https://sekoukan-navi.com';
-  const today = new Date().toISOString().split('T')[0];
+  // ===== ItemList 構造化データ（エージェント比較リスト） =====
+  const agentAffiliates = affiliates.filter((a) => a.category !== 'study');
+  const itemListSchema = agentAffiliates.length > 0 ? {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: `${prefName}の${jobTypeName}転職おすすめエージェント比較`,
+    numberOfItems: agentAffiliates.length,
+    itemListElement: agentAffiliates.map((item, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: item.name,
+      description: item.tagline,
+      url: item.url,
+    })),
+  } : null;
 
   // ===== WebPage 構造化データ =====
   const webPageSchema = {
@@ -64,8 +84,8 @@ export default function StructuredData({
     name: `${prefName}の${jobTypeName}転職おすすめエージェント比較`,
     description: `${prefName}で${jobTypeName}の転職を成功させるための転職エージェント比較。平均年収${avgSalary}万円台の求人情報も掲載。`,
     url: pageUrl,
-    datePublished: '2024-01-01',
-    dateModified: today,
+    datePublished: '2025-01-01',
+    dateModified: '2025-06-01',
     inLanguage: 'ja',
     author: {
       '@type': 'Person',
@@ -89,6 +109,12 @@ export default function StructuredData({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
+      {itemListSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }}
+        />
+      )}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema) }}

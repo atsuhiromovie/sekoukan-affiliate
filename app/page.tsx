@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { Metadata } from 'next';
 import { MapPin, TrendingUp, Sparkles, BookOpen } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
-import { JOB_TYPES, ARTICLE_CATEGORIES } from '../lib/constants';
+import { JOB_TYPES, ARTICLE_CATEGORIES, PREFS } from '../lib/constants';
 import PrefJobSelector from '../components/PrefJobSelector';
 import AffiliateCta from '../components/AffiliateCta';
 import RegionAccordion from '../components/RegionAccordion';
@@ -452,6 +452,41 @@ export default async function HomePage() {
                 </div>
               ))}
             </div>
+          </section>
+
+          {/* ===== 全都道府県リンクハブ ===== */}
+          <section className="mt-16 mb-8">
+            <h2 className="text-xl font-bold text-gray-800 mb-6 border-l-4 border-blue-600 pl-4">
+              全国の施工管理転職情報
+            </h2>
+            {(['北海道・東北', '関東', '中部', '近畿', '中国・四国', '九州・沖縄'] as const).map((regionLabel) => {
+              const regionMap: Record<string, string> = {
+                '北海道・東北': '北海道・東北',
+                '関東': '関東',
+                '中部': '中部',
+                '近畿': '近畿',
+                '中国・四国': '中国・四国',
+                '九州・沖縄': '九州・沖縄',
+              };
+              const prefs = PREFS.filter((p) => p.region === regionMap[regionLabel]);
+              if (prefs.length === 0) return null;
+              return (
+                <div key={regionLabel} className="mb-4">
+                  <p className="text-xs font-semibold text-gray-500 mb-2">{regionLabel}</p>
+                  <div className="flex flex-wrap gap-2">
+                    {prefs.map((pref) => (
+                      <Link
+                        key={pref.id}
+                        href={`/${pref.id}/architecture/`}
+                        className="text-sm text-blue-600 hover:underline bg-blue-50 border border-blue-100 px-3 py-1 rounded-full"
+                      >
+                        {pref.name}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
           </section>
 
         </div>

@@ -43,11 +43,13 @@ export async function generateMetadata({
 
   const year = new Date().getFullYear();
   const baseAvgSalary = pref.avgSalary + jobType.avgSalary;
-  const title = `${pref.name}の${jobType.fullName}転職 | 年収${baseAvgSalary}万円〜の求人・エージェント比較【${year}年最新】`;
-  const description = `${pref.name}で${jobType.fullName}の転職を成功させるための転職エージェント比較。${pref.name}の平均年収は約${baseAvgSalary}万円〜。求人の特徴・おすすめエージェントを徹底解説。`;
+  // absoluteでlayout.tsxのtemplateサフィックスを回避（タイトル長すぎ防止）
+  const title = `${pref.name}の${jobType.fullName}転職 | 年収${baseAvgSalary}万円〜のエージェント比較【${year}年】`;
+  const keyword = pref.trendKeywords?.[0] ? `${pref.trendKeywords[0]}など` : '';
+  const description = `${pref.name}で${jobType.fullName}の転職を成功させるための転職エージェント比較。${pref.name}の平均年収は約${baseAvgSalary}万円〜。${keyword}求人の特徴・おすすめエージェントを徹底解説。`;
 
   return {
-    title,
+    title: { absolute: title },
     description,
     alternates: {
       canonical: `${siteUrl}/${params.pref}/${params.job_type}/`,
@@ -124,6 +126,8 @@ export default async function PrefJobTypePage({
         avgSalary={avgSalary}
         faqs={faqs}
         pageUrl={pageUrl}
+        prefId={pref.id}
+        affiliates={affiliates.length > 0 ? affiliates : DEFAULT_AFFILIATES}
       />
 
       <div className="max-w-4xl mx-auto px-4 py-8">

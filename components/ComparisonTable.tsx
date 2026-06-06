@@ -251,7 +251,7 @@ function HeroCard({
   jobTypeName: string;
 }) {
   return (
-    <div className="rounded-2xl border-2 border-amber-400 shadow-lg overflow-hidden bg-gradient-to-br from-amber-50 to-white">
+    <div className="rounded-2xl border-2 border-amber-600 shadow-lg overflow-hidden bg-gradient-to-br from-amber-50 to-white">
       {/* 1位バッジヘッダー */}
       <div className="bg-amber-600 px-5 py-2 flex items-center gap-2">
         <span className="text-2xl">🥇</span>

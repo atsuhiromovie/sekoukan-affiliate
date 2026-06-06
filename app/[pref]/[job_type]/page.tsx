@@ -347,7 +347,7 @@ export default async function PrefJobTypePage({
                 href={item.url}
                 target="_blank"
                 rel="noopener noreferrer sponsored"
-                className="inline-block bg-amber-400 hover:bg-amber-500 text-white font-bold py-4 px-8 rounded-xl text-lg transition-colors"
+                className="inline-block bg-amber-600 hover:bg-amber-700 text-white font-bold py-4 px-8 rounded-xl text-lg transition-colors"
               >
                 {item.name}の公式サイトで求人を見る →
               </a>

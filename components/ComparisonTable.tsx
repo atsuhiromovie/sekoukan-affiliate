@@ -253,7 +253,7 @@ function HeroCard({
   return (
     <div className="rounded-2xl border-2 border-amber-400 shadow-lg overflow-hidden bg-gradient-to-br from-amber-50 to-white">
       {/* 1位バッジヘッダー */}
-      <div className="bg-amber-400 px-5 py-2 flex items-center gap-2">
+      <div className="bg-amber-600 px-5 py-2 flex items-center gap-2">
         <span className="text-2xl">🥇</span>
         <span className="font-bold text-white text-lg">編集部イチオシ</span>
         {item.badge && !/^\d+$/.test(item.badge) && (
@@ -335,7 +335,7 @@ function HeroCard({
             agentName={item.name}
             prefName={prefName}
             jobTypeName={jobTypeName}
-            className="block w-full py-4 rounded-xl font-bold text-center text-white text-lg transition-colors bg-amber-400 hover:bg-amber-500 shadow-md"
+            className="block w-full py-4 rounded-xl font-bold text-center text-white text-lg transition-colors bg-amber-600 hover:bg-amber-700 shadow-md"
           >
             無料登録して年収交渉を依頼 →
           </TrackingCtaLink>

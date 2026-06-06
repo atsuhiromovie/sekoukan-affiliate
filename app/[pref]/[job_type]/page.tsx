@@ -142,35 +142,10 @@ export default async function PrefJobTypePage({
           厳選エージェント比較【{new Date().getFullYear()}年最新】
         </h1>
 
-        {/* リード文 */}
-        <p className="text-gray-600 leading-relaxed mb-8">
-          この記事では、{pref.name}で{jobType.fullName}への転職を考えている方に向けて、
-          地域の求人に強い転職エージェントを厳選して比較します。
-          {pref.name}の平均年収・求人の特徴・転職成功のポイントも解説します。
+        {/* リード文（1文に圧縮） */}
+        <p className="text-gray-600 leading-relaxed mb-6">
+          {pref.name}で{jobType.fullName}への転職を考えている方向けに、地域の求人に強いエージェントを厳選して比較しています。
         </p>
-
-        {/* 年収サマリーカード */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-10">
-          <StatCard
-            label={`${pref.nameShort}の${jobType.name}平均年収`}
-            value={`約${avgSalary}万円`}
-            sub="経験・資格により変動"
-            color="blue"
-          />
-          <StatCard
-            label="1級資格取得後の目安"
-            value={`${avgSalary + 80}万円〜`}
-            sub="1級施工管理技士"
-            color="green"
-          />
-          <StatCard
-            label="転職エージェント経由の実績"
-            value={`+${Math.round(avgSalary * 0.15)}万円〜`}
-            sub="年収アップの目安"
-            color="amber"
-            className="col-span-2 sm:col-span-1"
-          />
-        </div>
 
         {/* 編集部メモ吹き出し（Sheetsに入力がある場合のみ表示） */}
         {editorNote && (
@@ -206,6 +181,29 @@ export default async function PrefJobTypePage({
           prefName={pref.name}
           jobTypeName={jobType.fullName}
         />
+
+        {/* 年収サマリーカード（比較表の後ろに配置） */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 my-8">
+          <StatCard
+            label={`${pref.nameShort}の${jobType.name}平均年収`}
+            value={`約${avgSalary}万円`}
+            sub="経験・資格により変動"
+            color="blue"
+          />
+          <StatCard
+            label="1級資格取得後の目安"
+            value={`${avgSalary + 80}万円〜`}
+            sub="1級施工管理技士"
+            color="green"
+          />
+          <StatCard
+            label="転職エージェント経由の実績"
+            value={`+${Math.round(avgSalary * 0.15)}万円〜`}
+            sub="年収アップの目安"
+            color="amber"
+            className="col-span-2 sm:col-span-1"
+          />
+        </div>
 
         {/* ===== 地域別アドバイス ===== */}
         <section className="my-10">

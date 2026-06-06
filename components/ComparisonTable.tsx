@@ -27,7 +27,9 @@ interface Props {
 }
 
 export default function ComparisonTable({ affiliates, prefName, jobTypeName }: Props) {
-  const [hero, ...rest] = affiliates;
+  const agents = affiliates.filter((a) => a.category !== 'study');
+  const studySites = affiliates.filter((a) => a.category === 'study');
+  const [hero, ...rest] = agents;
 
   return (
     <section className="my-10" id="comparison">
@@ -175,6 +177,60 @@ export default function ComparisonTable({ affiliates, prefName, jobTypeName }: P
             </table>
           </div>
         </>
+      )}
+
+      {/* 資格取得・独学サポートセクション */}
+      {studySites.length > 0 && (
+        <div className="mt-10">
+          <h3 className="text-xl font-bold text-gray-800 mb-2 border-l-4 border-green-500 pl-4">
+            資格取得・独学サポート
+          </h3>
+          <p className="text-gray-600 text-sm mb-4">
+            転職前に資格取得を目指す方向けの学習サポートサービスです。
+          </p>
+          <div className="space-y-4">
+            {studySites.map((item) => (
+              <div key={item.id} className="rounded-xl border border-green-200 bg-green-50 overflow-hidden">
+                <div className="p-5">
+                  <div className="sm:flex sm:items-start sm:gap-6">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-xs font-bold bg-green-600 text-white px-2 py-0.5 rounded">学習サポート</span>
+                        <h4 className="font-bold text-lg text-gray-900">{item.name}</h4>
+                      </div>
+                      <p className="text-sm text-gray-600 mb-3">{item.tagline}</p>
+                      {item.reason && (
+                        <p className="text-xs text-gray-600 bg-white border border-green-100 rounded-lg px-3 py-2 mb-3 leading-relaxed">
+                          {item.reason}
+                        </p>
+                      )}
+                      <ul className="space-y-1">
+                        {item.features.map((f, i) => (
+                          <li key={i} className="flex items-start gap-2 text-sm text-gray-700">
+                            <span className="text-green-500 shrink-0 mt-0.5">✓</span>
+                            {f}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div className="mt-4 sm:mt-0 sm:w-44 shrink-0">
+                      <TrackingCtaLink
+                        href={item.url}
+                        isRecommended={false}
+                        agentName={item.name}
+                        prefName={prefName}
+                        jobTypeName={jobTypeName}
+                        className="block w-full py-3 rounded-lg font-bold text-center text-white transition-colors bg-green-600 hover:bg-green-700 text-sm"
+                      >
+                        詳細を見る →
+                      </TrackingCtaLink>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       )}
 
       <p className="text-xs text-gray-400 mt-3">

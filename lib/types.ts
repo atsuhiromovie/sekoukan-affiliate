@@ -35,6 +35,7 @@ export interface AffiliateItem {
   targetTags?: string[];  // こんな人におすすめ（例: ["初めての転職", "40代歓迎"]）
   reason?: string;        // 編集部コメント（選んだ理由・一言）
   rank?: number;          // デフォルト表示順位（1始まり）
+  category?: 'agent' | 'study'; // agent: 転職エージェント / study: 資格取得サイト
 }
 
 export interface FAQItem {

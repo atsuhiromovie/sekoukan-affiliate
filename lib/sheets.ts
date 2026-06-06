@@ -80,7 +80,7 @@ export const DEFAULT_AFFILIATES: AffiliateItem[] = [
 /**
  * アフィリエイト案件をスプレッドシートから取得
  * シート名: "affiliate_items"
- * カラム順: id | name | tagline | features(|区切り) | regions(|区切り) | jobTypes(|区切り) | url | badge | minSalaryUp | isRecommended | targetTags(|区切り) | reason | rank
+ * カラム順: id | name | tagline | features(|区切り) | regions(|区切り) | jobTypes(|区切り) | url | badge | minSalaryUp | isRecommended | targetTags(|区切り) | reason | rank | category
  */
 export async function fetchAffiliatesFromSheets(): Promise<AffiliateItem[]> {
   if (USE_LOCAL_FALLBACK) {
@@ -89,7 +89,7 @@ export async function fetchAffiliatesFromSheets(): Promise<AffiliateItem[]> {
   }
 
   try {
-    const range = encodeURIComponent('affiliate_items!A2:M100');
+    const range = encodeURIComponent('affiliate_items!A2:N100');
     const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${range}?key=${API_KEY}`;
 
     const res = await fetch(url, { next: { revalidate: false } }); // SSGなのでrevalidate不要
@@ -114,6 +114,7 @@ export async function fetchAffiliatesFromSheets(): Promise<AffiliateItem[]> {
         targetTags: row[10] ? row[10].split('|').filter(Boolean) : undefined,
         reason: row[11] || undefined,
         rank: row[12] ? Number(row[12]) : undefined,
+        category: (row[13] === 'study' ? 'study' : 'agent') as 'agent' | 'study',
       }));
   } catch (err) {
     console.error('[Sheets] 取得エラー → フォールバックを使用:', err);

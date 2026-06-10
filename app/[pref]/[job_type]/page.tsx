@@ -8,6 +8,7 @@ import {
   fetchFAQs,
   fetchEditorNotes,
   fetchRankingOverrides,
+  fetchArticles,
   generateDefaultFAQs,
   DEFAULT_AFFILIATES,
 } from '../../../lib/sheets';
@@ -73,13 +74,19 @@ export default async function PrefJobTypePage({
   if (!pref || !jobType) notFound();
 
   // ビルド時にGoogle Sheetsからデータ取得
-  const [allAffiliates, salaryOverrides, faqMap, editorNoteMap, rankingOverrides] = await Promise.all([
+  const [allAffiliates, salaryOverrides, faqMap, editorNoteMap, rankingOverrides, allArticles] = await Promise.all([
     fetchAffiliatesFromSheets(),
     fetchSalaryOverrides(),
     fetchFAQs(),
     fetchEditorNotes(),
     fetchRankingOverrides(),
+    fetchArticles(),
   ]);
+
+  // この都道府県に関連する記事（工種指定がある記事は一致するものだけ）
+  const relatedArticles = allArticles
+    .filter((a) => a.pref === pref.id && (!a.jobType || a.jobType === jobType.id))
+    .slice(0, 3);
 
   // 対応工種・地域でフィルタリング（id重複排除）
   const seenIds = new Set<string>();
@@ -286,6 +293,28 @@ export default async function PrefJobTypePage({
 
         {/* ===== FAQ ===== */}
         <FAQSection faqs={faqs} prefName={pref.name} jobTypeName={jobType.fullName} />
+
+        {/* ===== 関連コラム ===== */}
+        {relatedArticles.length > 0 && (
+          <section className="my-10">
+            <h2 className="text-lg font-bold text-gray-800 mb-4">
+              {pref.nameShort}の転職に役立つコラム
+            </h2>
+            <ul className="space-y-2">
+              {relatedArticles.map((a) => (
+                <li key={a.slug}>
+                  <Link
+                    href={`/articles/${a.slug}/`}
+                    className="flex items-center gap-2 text-sm text-blue-600 hover:underline"
+                  >
+                    <span className="text-gray-400">›</span>
+                    {a.title}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
 
         {/* ===== 関連ページ内部リンク ===== */}
         <section className="my-10 bg-gray-50 border border-gray-200 rounded-xl p-6">

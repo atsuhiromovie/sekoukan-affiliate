@@ -2,7 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Metadata } from 'next';
 import { TrendingUp, Sparkles } from 'lucide-react';
-import { JOB_TYPES, ARTICLE_CATEGORIES, PREFS } from '../lib/constants';
+import { JOB_TYPES, ARTICLE_CATEGORIES, PREFS, AREA_GROUPS } from '../lib/constants';
 import PrefJobSelector from '../components/PrefJobSelector';
 import AffiliateCta from '../components/AffiliateCta';
 import RegionAccordion from '../components/RegionAccordion';
@@ -608,8 +608,19 @@ export default async function HomePage() {
             >
               全国の施工管理転職情報
             </h2>
-            {(['北海道・東北', '関東', '中部', '近畿', '中国・四国', '九州・沖縄'] as const).map((regionLabel) => {
-              const prefs = PREFS.filter((p) => p.region === regionLabel);
+            {/* 共有のAREA_GROUPS（prefId基準）から構築。中国・四国はハブ上では1グループに統合して表示する。 */}
+            {([
+              { label: '北海道・東北', areaLabels: ['北海道・東北'] },
+              { label: '関東', areaLabels: ['関東'] },
+              { label: '中部', areaLabels: ['中部'] },
+              { label: '近畿', areaLabels: ['近畿'] },
+              { label: '中国・四国', areaLabels: ['中国', '四国'] },
+              { label: '九州・沖縄', areaLabels: ['九州・沖縄'] },
+            ] as const).map(({ label: regionLabel, areaLabels }) => {
+              const prefIds = AREA_GROUPS
+                .filter((g) => (areaLabels as readonly string[]).includes(g.label))
+                .flatMap((g) => g.prefIds);
+              const prefs = PREFS.filter((p) => prefIds.includes(p.id));
               if (prefs.length === 0) return null;
               return (
                 <div key={regionLabel} className="mb-4">
@@ -620,7 +631,7 @@ export default async function HomePage() {
                     {prefs.map((pref) => (
                       <Link
                         key={pref.id}
-                        href={`/${pref.id}/architecture/`}
+                        href={`/${pref.id}/`}
                         className="text-sm px-3 py-1 rounded-full transition-colors"
                         style={{
                           color: 'var(--txt2)',

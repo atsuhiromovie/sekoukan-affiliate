@@ -2,45 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { PREFS } from '../lib/constants';
-
-const AREA_GROUPS = [
-  {
-    label: '北海道・東北',
-    en: 'HOKKAIDO / TOHOKU',
-    prefIds: ['hokkaido', 'aomori', 'iwate', 'miyagi', 'akita', 'yamagata', 'fukushima'],
-  },
-  {
-    label: '関東',
-    en: 'KANTO',
-    prefIds: ['ibaraki', 'tochigi', 'gunma', 'saitama', 'chiba', 'tokyo', 'kanagawa'],
-  },
-  {
-    label: '中部',
-    en: 'CHUBU',
-    prefIds: ['niigata', 'toyama', 'ishikawa', 'fukui', 'yamanashi', 'nagano', 'shizuoka', 'aichi', 'mie'],
-  },
-  {
-    label: '近畿',
-    en: 'KINKI',
-    prefIds: ['shiga', 'kyoto', 'osaka', 'hyogo', 'nara', 'wakayama'],
-  },
-  {
-    label: '中国',
-    en: 'CHUGOKU',
-    prefIds: ['tottori', 'shimane', 'okayama', 'hiroshima', 'yamaguchi'],
-  },
-  {
-    label: '四国',
-    en: 'SHIKOKU',
-    prefIds: ['tokushima', 'kagawa', 'ehime', 'kochi'],
-  },
-  {
-    label: '九州・沖縄',
-    en: 'KYUSHU / OKINAWA',
-    prefIds: ['fukuoka', 'saga', 'nagasaki', 'kumamoto', 'oita', 'miyazaki', 'kagoshima', 'okinawa'],
-  },
-];
+import { PREFS, AREA_GROUPS } from '../lib/constants';
 
 export default function RegionAccordion() {
   const [openArea, setOpenArea] = useState<string | null>(null);

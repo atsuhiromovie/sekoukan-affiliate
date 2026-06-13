@@ -25,6 +25,7 @@ export const PREFS: PrefData[] = [
   { id: 'fukui', name: '福井県', nameShort: '福井', region: '中部', avgSalary: 420, demandLevel: 'medium', majorCity: '福井市', features: ['原子力関連施設の施工実績', '北陸新幹線工事の恩恵'], trendKeywords: ['北陸新幹線福井・敦賀開業後開発', '原子力施設リプレース工事', '福井駅周辺再開発', '繊維・化学工場更新'] },
   { id: 'yamanashi', name: '山梨県', nameShort: '山梨', region: '中部', avgSalary: 430, demandLevel: 'medium', majorCity: '甲府市', features: ['リニア中央新幹線の工事需要', '物流・観光施設建設'], trendKeywords: ['リニア中央新幹線山梨工区', '物流センター建設', '富士北麓観光施設整備', 'データセンター誘致'] },
   { id: 'nagano', name: '長野県', nameShort: '長野', region: '中部', avgSalary: 440, demandLevel: 'medium', majorCity: '長野市', features: ['半導体・精密機器工場建設', 'リゾート施設の新築・改修'], trendKeywords: ['半導体・精密機器工場建設', 'リニア中央新幹線長野工区', 'リゾート施設改修・新設', '再生可能エネルギー施設'] },
+  { id: 'gifu', name: '岐阜県', nameShort: '岐阜', region: '中部', avgSalary: 430, demandLevel: 'medium', majorCity: '岐阜市', features: ['自動車・機械系の製造業が集積し工場建設案件が安定', '名古屋圏への通勤圏で大型案件にアクセスしやすい'], trendKeywords: ['リニア中央新幹線 岐阜県駅（中津川）関連工事', '東海環状自動車道 整備', '自動車・部品工場の更新・増設', '大規模物流センター建設'] },
   { id: 'shizuoka', name: '静岡県', nameShort: '静岡', region: '中部', avgSalary: 460, demandLevel: 'high', majorCity: '静岡市', features: ['製造業集積で工場建設多数', '東西交通の要衝でインフラ需要'], trendKeywords: ['リニア中央新幹線静岡工区', '浜松SA周辺物流施設', 'EV・自動車工場更新', '港湾・物流施設整備'] },
   { id: 'aichi', name: '愛知県', nameShort: '愛知', region: '中部', avgSalary: 510, demandLevel: 'high', majorCity: '名古屋市', features: ['東海圏最大の建設市場', '自動車・製造業関連施設が豊富'], trendKeywords: ['名古屋駅周辺超高層開発', 'EV工場・バッテリー施設建設', 'リニア名古屋工区', 'アジア競技大会施設整備'] },
   { id: 'mie', name: '三重県', nameShort: '三重', region: '近畿', avgSalary: 440, demandLevel: 'medium', majorCity: '津市', features: ['石油化学コンビナート施設', '半導体工場の建設需要増'], trendKeywords: ['半導体工場建設需要増', '石油化学コンビナート更新', '三重県四日市港整備', '伊勢志摩観光施設整備'] },
@@ -248,3 +249,49 @@ export const ARTICLE_CATEGORIES: Record<string, string> = {
   work:          '仕事内容',
   region:        '地域特化',
 };
+
+// 地域グループ（prefId基準・単一の真実）。トップのRegionAccordionと全都道府県リンクハブで共有する。
+// PREFSの region フィールドは粒度が粗く複合ラベルに一致しないため、グルーピングはこの prefId 定義に統一する。
+export interface AreaGroup {
+  label: string;
+  en: string;
+  prefIds: string[];
+}
+
+export const AREA_GROUPS: AreaGroup[] = [
+  {
+    label: '北海道・東北',
+    en: 'HOKKAIDO / TOHOKU',
+    prefIds: ['hokkaido', 'aomori', 'iwate', 'miyagi', 'akita', 'yamagata', 'fukushima'],
+  },
+  {
+    label: '関東',
+    en: 'KANTO',
+    prefIds: ['ibaraki', 'tochigi', 'gunma', 'saitama', 'chiba', 'tokyo', 'kanagawa'],
+  },
+  {
+    label: '中部',
+    en: 'CHUBU',
+    prefIds: ['niigata', 'toyama', 'ishikawa', 'fukui', 'yamanashi', 'nagano', 'gifu', 'shizuoka', 'aichi', 'mie'],
+  },
+  {
+    label: '近畿',
+    en: 'KINKI',
+    prefIds: ['shiga', 'kyoto', 'osaka', 'hyogo', 'nara', 'wakayama'],
+  },
+  {
+    label: '中国',
+    en: 'CHUGOKU',
+    prefIds: ['tottori', 'shimane', 'okayama', 'hiroshima', 'yamaguchi'],
+  },
+  {
+    label: '四国',
+    en: 'SHIKOKU',
+    prefIds: ['tokushima', 'kagawa', 'ehime', 'kochi'],
+  },
+  {
+    label: '九州・沖縄',
+    en: 'KYUSHU / OKINAWA',
+    prefIds: ['fukuoka', 'saga', 'nagasaki', 'kumamoto', 'oita', 'miyazaki', 'kagoshima', 'okinawa'],
+  },
+];

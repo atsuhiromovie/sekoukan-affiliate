@@ -29,3 +29,7 @@ sekoukan-project-summary.md
 author-persona.md
 article-production-spec.md
 article-kw-plan-100.md
+
+# Google サービスアカウント鍵（絶対にコミットしない）
+service-account.json
+*-service-account.json

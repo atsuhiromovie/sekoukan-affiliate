@@ -2,6 +2,13 @@ import { PREFS } from './constants';
 import { Article } from './types';
 
 /**
+ * 本文中アフィリエイトブロックの差し込み位置を示すトークン。
+ * 記事本文の（※アフィリエイトリンク設置箇所）を、記事ページ側でComparisonTableに
+ * 置換するためのセンチネル。記事ページがこのトークンで本文を分割して描画する。
+ */
+export const AFFILIATE_BLOCK_TOKEN = '__AFFILIATE_BLOCK__';
+
+/**
  * （※内部リンク：#X記事へ）プレースホルダーを実際のMarkdownリンクに変換する
  * 記事番号をゼロ埋め3桁にして article-XXX の id で検索する
  */
@@ -51,8 +58,9 @@ function resolvePlaceholderLinks(body: string, allArticles: Article[]): string {
     return '';
   });
 
-  // （※アフィリエイトリンク設置箇所）→ 削除（CTAはページレイアウト側で描画）
-  result = result.replace(/（※アフィリエイトリンク設置箇所）/g, '');
+  // （※アフィリエイトリンク設置箇所）→ センチネルトークンに置換
+  // （記事ページ側でこのトークンを ComparisonTable に差し替えて本文内に描画する）
+  result = result.replace(/（※アフィリエイトリンク設置箇所）/g, AFFILIATE_BLOCK_TOKEN);
 
   return result;
 }

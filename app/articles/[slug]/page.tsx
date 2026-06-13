@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -5,12 +6,19 @@ import { notFound } from 'next/navigation';
 import ReactMarkdown from 'react-markdown';
 import type { Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { fetchArticles } from '../../../lib/sheets';
+import {
+  fetchArticles,
+  fetchAffiliatesFromSheets,
+  fetchRankingOverrides,
+  DEFAULT_AFFILIATES,
+} from '../../../lib/sheets';
 import { ARTICLE_CATEGORIES, JOB_TYPES, PREFS } from '../../../lib/constants';
 import { SITE_URL } from '../../../lib/config';
-import { addInternalLinks } from '../../../lib/internal-links';
+import { addInternalLinks, AFFILIATE_BLOCK_TOKEN } from '../../../lib/internal-links';
+import { AffiliateItem } from '../../../lib/types';
 import ArticleImage from './ArticleImage';
 import AffiliateCta from '../../../components/AffiliateCta';
+import ComparisonTable from '../../../components/ComparisonTable';
 
 // ===== カテゴリ別カラー（heroImage代替）※英語ID対応 =====
 const CATEGORY_COLORS: Record<string, string> = {
@@ -146,7 +154,11 @@ export default async function ArticleDetailPage({
 }: {
   params: { slug: string };
 }) {
-  const articles = await fetchArticles();
+  const [articles, allAffiliates, rankingOverrides] = await Promise.all([
+    fetchArticles(),
+    fetchAffiliatesFromSheets(),
+    fetchRankingOverrides(),
+  ]);
   const article = articles.find((a) => a.slug === params.slug);
   if (!article) notFound();
 
@@ -158,6 +170,75 @@ export default async function ArticleDetailPage({
         (a.category === article.category || a.jobType === article.jobType)
     )
     .slice(0, 3);
+
+  // ===== 本文内アフィリエイトブロック用の案件を算出 =====
+  // 都道府県×工種ページ（[pref]/[job_type]）と同じフィルタ・ソートを記事の pref/jobType に適用する。
+  // pref/jobType が未設定なら、その軸の制約は掛けない（全国・全工種の案件を表示）。
+  const articlePref = article.pref ? PREFS.find((p) => p.id === article.pref) : undefined;
+  const articleJob = article.jobType ? JOB_TYPES.find((j) => j.id === article.jobType) : undefined;
+
+  const seenAffIds = new Set<string>();
+  const filteredAff: AffiliateItem[] = allAffiliates.filter((item) => {
+    const regionOk =
+      item.regions.includes('all') || !articlePref || item.regions.includes(articlePref.id);
+    const jobOk =
+      item.jobTypes.includes('all') || !articleJob || item.jobTypes.includes(articleJob.id);
+    if (!regionOk || !jobOk || seenAffIds.has(item.id)) return false;
+    seenAffIds.add(item.id);
+    return true;
+  });
+  const affOverrideMap =
+    articlePref && articleJob
+      ? rankingOverrides.get(`${articlePref.id}_${articleJob.id}`)
+      : undefined;
+  const sortedAff = [...filteredAff].sort((a, b) => {
+    const ra = affOverrideMap?.get(a.id) ?? a.rank ?? 999;
+    const rb = affOverrideMap?.get(b.id) ?? b.rank ?? 999;
+    return ra - rb;
+  });
+  const blockAffiliates = sortedAff.length > 0 ? sortedAff : DEFAULT_AFFILIATES;
+  const blockPrefName = articlePref?.name ?? '全国';
+  const blockJobName = articleJob?.fullName ?? '施工管理';
+
+  // ===== 本文Markdownを整形し、アフィリエイトブロックのトークンで分割 =====
+  const processedBody = (() => {
+    // 行単位でテーブルブロックを検出し、適切に改行補完する
+    const lines = article.body.split('\n');
+    const result: string[] = [];
+
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      const isTableLine = line.trimStart().startsWith('|');
+      const prevIsTable = i > 0 && lines[i - 1].trimStart().startsWith('|');
+      const nextIsTable = i < lines.length - 1 && lines[i + 1].trimStart().startsWith('|');
+
+      if (isTableLine) {
+        if (!prevIsTable && result.length > 0) {
+          const last = result[result.length - 1];
+          if (last !== '') result.push('');
+        }
+        result.push(line);
+        if (!nextIsTable) {
+          result.push('');
+        }
+      } else {
+        if (line === '') {
+          result.push('');
+        } else {
+          if (result.length > 0 && result[result.length - 1] !== '' && !prevIsTable) {
+            result.push('');
+          }
+          result.push(line);
+        }
+      }
+    }
+
+    return addInternalLinks(result.join('\n'), article.slug, articles);
+  })();
+
+  // トークンで分割（複数あっても各区切りにブロックを差し込む）。トークンが無ければ従来通り単一本文。
+  const bodyParts = processedBody.split(AFFILIATE_BLOCK_TOKEN);
+  const hasInlineBlock = bodyParts.length > 1;
 
   const fallbackColor =
     CATEGORY_COLORS[article.category ?? ''] ?? '#1a2744';
@@ -254,49 +335,26 @@ export default async function ArticleDetailPage({
         )}
       </div>
 
-      {/* 本文（Markdownレンダリング） */}
+      {/* 本文（Markdownレンダリング）＋ アフィリエイトブロックを本文内に差し込み */}
       <article style={{ fontSize: '1.0625rem' }}>
         <ReactMarkdown components={mdComponents} remarkPlugins={[remarkGfm]}>
-          {(() => {
-            // 行単位でテーブルブロックを検出し、適切に改行補完する
-            const lines = article.body.split('\n');
-            const result: string[] = [];
-
-            for (let i = 0; i < lines.length; i++) {
-              const line = lines[i];
-              const isTableLine = line.trimStart().startsWith('|');
-              const prevIsTable = i > 0 && lines[i - 1].trimStart().startsWith('|');
-              const nextIsTable = i < lines.length - 1 && lines[i + 1].trimStart().startsWith('|');
-
-              if (isTableLine) {
-                // テーブルブロック開始前に空行を補完
-                if (!prevIsTable && result.length > 0) {
-                  const last = result[result.length - 1];
-                  if (last !== '') result.push('');
-                }
-                result.push(line);
-                // テーブルブロック終了後に空行を補完
-                if (!nextIsTable) {
-                  result.push('');
-                }
-              } else {
-                // 非テーブル行：空行でなければ段落として扱う
-                if (line === '') {
-                  result.push('');
-                } else {
-                  // 前の行が空でなく、前の行もテーブルでなければ空行を補完
-                  if (result.length > 0 && result[result.length - 1] !== '' && !prevIsTable) {
-                    result.push('');
-                  }
-                  result.push(line);
-                }
-              }
-            }
-
-            const processed = result.join('\n');
-            return addInternalLinks(processed, article.slug, articles);
-          })()}
+          {bodyParts[0]}
         </ReactMarkdown>
+        {bodyParts.slice(1).map((part, i) => (
+          <Fragment key={i}>
+            <ComparisonTable
+              affiliates={blockAffiliates}
+              prefName={blockPrefName}
+              jobTypeName={blockJobName}
+              jobTypeId={article.jobType || undefined}
+            />
+            {part.trim() !== '' && (
+              <ReactMarkdown components={mdComponents} remarkPlugins={[remarkGfm]}>
+                {part}
+              </ReactMarkdown>
+            )}
+          </Fragment>
+        ))}
       </article>
 
       {/* CTA */}
@@ -313,20 +371,23 @@ export default async function ArticleDetailPage({
         let ctaHref: string;
 
         if (prefData && jobTypeData) {
-          // pref + jobType どちらも設定されている場合
+          // pref + jobType どちらも設定されている場合 → 該当の都道府県×工種ページ（換金可能）
           ctaHeading = `${prefData.name}の${jobTypeData.fullName}求人を見る`;
           ctaButtonLabel = `${prefData.nameShort}の求人を見る →`;
           ctaHref = `/${article.pref}/${article.jobType}/`;
         } else if (jobTypeData) {
           // jobType のみ設定されている場合
+          // 本文内に比較ブロックがあればそこへスクロール、なければ該当工種の東京ページ（換金可能）へ。
+          // ※ 旧実装は /articles/sekoukan-agent-osusume-2026/ を指し自己ループ・換金不能になっていた
           ctaHeading = `${jobTypeData.fullName}の転職エージェントを比較する`;
           ctaButtonLabel = 'エージェントを比較する →';
-          ctaHref = '/articles/sekoukan-agent-osusume-2026/';
+          ctaHref = hasInlineBlock ? '#comparison' : `/tokyo/${article.jobType}/`;
         } else {
           // どちらも設定されていない場合
+          // 本文内に比較ブロックがあればそこへ、なければトップ（RECOMMENDED実リンク）へ。
           ctaHeading = '転職エージェントを今すぐ比較する';
           ctaButtonLabel = 'エージェントを比較する →';
-          ctaHref = '/articles/sekoukan-agent-osusume-2026/';
+          ctaHref = hasInlineBlock ? '#comparison' : '/';
         }
 
         const ctaAgentName = prefData && jobTypeData

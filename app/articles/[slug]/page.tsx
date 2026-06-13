@@ -384,10 +384,16 @@ export default async function ArticleDetailPage({
           ctaHref = hasInlineBlock ? '#comparison' : `/tokyo/${article.jobType}/`;
         } else {
           // どちらも設定されていない場合
-          // 本文内に比較ブロックがあればそこへ、なければトップ（RECOMMENDED実リンク）へ。
+          // 本文内に比較ブロックがあればそこへ、なければエージェント比較記事（カード掲載）へ誘導。
+          // ※ 比較記事自身に本文ブロックが無い場合だけは自己ループ回避でトップへフォールバック。
+          const AGENT_ARTICLE_SLUG = 'sekoukan-agent-osusume-2026';
           ctaHeading = '転職エージェントを今すぐ比較する';
           ctaButtonLabel = 'エージェントを比較する →';
-          ctaHref = hasInlineBlock ? '#comparison' : '/';
+          ctaHref = hasInlineBlock
+            ? '#comparison'
+            : article.slug === AGENT_ARTICLE_SLUG
+            ? '/'
+            : `/articles/${AGENT_ARTICLE_SLUG}/`;
         }
 
         const ctaAgentName = prefData && jobTypeData

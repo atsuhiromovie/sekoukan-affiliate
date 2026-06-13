@@ -83,9 +83,13 @@ export default async function PrefJobTypePage({
     fetchArticles(),
   ]);
 
-  // この都道府県に関連する記事（工種指定がある記事は一致するものだけ）
+  // この都道府県に関連する記事（工種は all か当ページの工種に一致するもの）
   const relatedArticles = allArticles
-    .filter((a) => a.pref === pref.id && (!a.jobType || a.jobType === jobType.id))
+    .filter(
+      (a) =>
+        a.pref === pref.id &&
+        (!a.jobType || a.jobType === 'all' || a.jobType === jobType.id)
+    )
     .slice(0, 3);
 
   // 対応工種・地域でフィルタリング（id重複排除）

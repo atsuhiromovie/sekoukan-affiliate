@@ -13,8 +13,11 @@ export const metadata: Metadata = {
 
 export default async function ArticlesPage() {
   const allArticles = await fetchArticles();
-  const articles = allArticles.sort(
-    (a, b) => (b.publishedAt ?? '').localeCompare(a.publishedAt ?? '')
+  // publishedAt の表記ゆれ（"2026/05/29 5:18:50" のようなスラッシュ・時刻付き）が
+  // 文字列比較で先頭に来てしまうのを防ぐため、日付部分を YYYY-MM-DD に正規化して降順ソートする
+  const normalizeDate = (s?: string) => (s ?? '').replace(/\//g, '-').slice(0, 10);
+  const articles = [...allArticles].sort(
+    (a, b) => normalizeDate(b.publishedAt).localeCompare(normalizeDate(a.publishedAt))
   );
 
   return (

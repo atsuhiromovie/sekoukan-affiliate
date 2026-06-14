@@ -238,7 +238,6 @@ export default async function ArticleDetailPage({
 
   // トークンで分割（複数あっても各区切りにブロックを差し込む）。トークンが無ければ従来通り単一本文。
   const bodyParts = processedBody.split(AFFILIATE_BLOCK_TOKEN);
-  const hasInlineBlock = bodyParts.length > 1;
 
   const fallbackColor =
     CATEGORY_COLORS[article.category ?? ''] ?? '#1a2744';
@@ -357,7 +356,7 @@ export default async function ArticleDetailPage({
         ))}
       </article>
 
-      {/* CTA */}
+      {/* CTA / アフィリエイトブロック */}
       {(() => {
         const jobTypeData = article.jobType
           ? JOB_TYPES.find((j) => j.id === article.jobType)
@@ -366,61 +365,122 @@ export default async function ArticleDetailPage({
           ? PREFS.find((p) => p.id === article.pref)
           : undefined;
 
-        let ctaHeading: string;
-        let ctaButtonLabel: string;
-        let ctaHref: string;
-
+        // pref と jobType を両方持つ記事 → 換金ページ（/{pref}/{jobType}/）への内部リンクCTAを維持
         if (prefData && jobTypeData) {
-          // pref + jobType どちらも設定されている場合 → 該当の都道府県×工種ページ（換金可能）
-          ctaHeading = `${prefData.name}の${jobTypeData.fullName}求人を見る`;
-          ctaButtonLabel = `${prefData.nameShort}の求人を見る →`;
-          ctaHref = `/${article.pref}/${article.jobType}/`;
-        } else if (jobTypeData) {
-          // jobType のみ設定されている場合
-          // 本文内に比較ブロックがあればそこへスクロール、なければ該当工種の東京ページ（換金可能）へ。
-          // ※ 旧実装は /articles/sekoukan-agent-osusume-2026/ を指し自己ループ・換金不能になっていた
-          ctaHeading = `${jobTypeData.fullName}の転職エージェントを比較する`;
-          ctaButtonLabel = 'エージェントを比較する →';
-          ctaHref = hasInlineBlock ? '#comparison' : `/tokyo/${article.jobType}/`;
-        } else {
-          // どちらも設定されていない場合
-          // 本文内に比較ブロックがあればそこへ、なければエージェント比較記事（カード掲載）へ誘導。
-          // ※ 比較記事自身に本文ブロックが無い場合だけは自己ループ回避でトップへフォールバック。
-          const AGENT_ARTICLE_SLUG = 'sekoukan-agent-osusume-2026';
-          ctaHeading = '転職エージェントを今すぐ比較する';
-          ctaButtonLabel = 'エージェントを比較する →';
-          ctaHref = hasInlineBlock
-            ? '#comparison'
-            : article.slug === AGENT_ARTICLE_SLUG
-            ? '/'
-            : `/articles/${AGENT_ARTICLE_SLUG}/`;
+          const ctaHeading = `${prefData.name}の${jobTypeData.fullName}求人を見る`;
+          const ctaButtonLabel = `${prefData.nameShort}の求人を見る →`;
+          const ctaHref = `/${article.pref}/${article.jobType}/`;
+          const ctaAgentName = `${prefData.name}/${jobTypeData.fullName}`;
+          return (
+            <div
+              className="mt-12 rounded-xl p-6 text-center"
+              style={{ backgroundColor: '#1a2744' }}
+            >
+              <p className="text-white font-bold mb-1">{ctaHeading}</p>
+              <p className="text-sm mb-4" style={{ color: 'rgba(255,255,255,0.6)' }}>
+                都道府県・工種別の求人・エージェント情報を無料で確認
+              </p>
+              <AffiliateCta
+                href={ctaHref}
+                agentName={ctaAgentName}
+                source="article_cta"
+                isExternal={false}
+                className="inline-block rounded-lg px-6 py-2.5 text-sm font-semibold transition-opacity hover:opacity-90"
+                style={{ backgroundColor: '#f59e0b', color: '#1a2744' }}
+              >
+                {ctaButtonLabel}
+              </AffiliateCta>
+            </div>
+          );
         }
 
-        const ctaAgentName = prefData && jobTypeData
-          ? `${prefData.name}/${jobTypeData.fullName}`
-          : jobTypeData
-          ? jobTypeData.fullName
-          : '';
+        // それ以外（pref・jobType のいずれかが欠ける記事すべて）→ 実アフィリエイト案件ブロックを記事末に描画。
+        // app/page.tsx の RECOMMENDED と同じ要領で isRecommended を優先し上位3件（不足時は rank 順で補完）。
+        // 各案件は外部アフィリンク（item.url / isExternal / source="article_affiliate"）で出し、
+        // rel="sponsored"・target=_blank・gtagトラッキングを効かせる。これで自己ループ／行き止まりを解消する。
+        const endBlockAffiliates = [...allAffiliates]
+          .sort((a, b) => {
+            if (a.isRecommended !== b.isRecommended) return a.isRecommended ? -1 : 1;
+            return (a.rank ?? 999) - (b.rank ?? 999);
+          })
+          .slice(0, 3);
 
         return (
-          <div
-            className="mt-12 rounded-xl p-6 text-center"
-            style={{ backgroundColor: '#1a2744' }}
-          >
-            <p className="text-white font-bold mb-1">{ctaHeading}</p>
-            <p className="text-sm mb-4" style={{ color: 'rgba(255,255,255,0.6)' }}>
-              都道府県・工種別の求人・エージェント情報を無料で確認
+          <div className="mt-12">
+            <div className="rounded-xl p-6" style={{ backgroundColor: '#1a2744' }}>
+              <p className="text-white font-bold text-center mb-1">
+                施工管理の転職エージェントを今すぐ比較する
+              </p>
+              <p className="text-sm text-center mb-5" style={{ color: 'rgba(255,255,255,0.6)' }}>
+                編集部おすすめの施工管理特化エージェント（登録・相談は無料）
+              </p>
+              <div className="grid gap-4 sm:grid-cols-3">
+                {endBlockAffiliates.map((item, i) => {
+                  const isFirst = i === 0;
+                  return (
+                    <AffiliateCta
+                      key={item.id}
+                      href={item.url}
+                      agentName={item.name}
+                      isRecommended={item.isRecommended}
+                      source="article_affiliate"
+                      className="flex flex-col rounded-lg p-4"
+                      style={{
+                        backgroundColor: '#142036',
+                        border: isFirst
+                          ? '1px solid #f59e0b'
+                          : '1px solid rgba(255,255,255,0.12)',
+                        textDecoration: 'none',
+                      }}
+                    >
+                      {item.badge && !/^\d+$/.test(item.badge) && (
+                        <span
+                          className="inline-block self-start text-xs font-bold px-2 py-0.5 rounded mb-2"
+                          style={{ backgroundColor: '#f59e0b', color: '#1a2744' }}
+                        >
+                          {item.badge}
+                        </span>
+                      )}
+                      <div className="font-bold text-sm leading-snug mb-1" style={{ color: '#ffffff' }}>
+                        {item.name}
+                      </div>
+                      {item.tagline && (
+                        <div className="text-xs leading-relaxed mb-3" style={{ color: 'rgba(255,255,255,0.6)' }}>
+                          {item.tagline}
+                        </div>
+                      )}
+                      {item.features.length > 0 && (
+                        <ul className="text-xs space-y-1 mb-4 flex-1" style={{ color: 'rgba(255,255,255,0.6)' }}>
+                          {item.features.slice(0, 3).map((f, fi) => (
+                            <li key={fi} className="flex gap-1.5">
+                              <span style={{ color: '#f59e0b', flexShrink: 0 }}>✓</span>
+                              {f}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                      <div
+                        className="mt-auto text-center text-sm font-bold py-2.5 rounded-md"
+                        style={
+                          isFirst
+                            ? { backgroundColor: '#f59e0b', color: '#1a2744' }
+                            : {
+                                backgroundColor: 'rgba(245,158,11,0.12)',
+                                color: '#f59e0b',
+                                border: '1px solid rgba(245,158,11,0.3)',
+                              }
+                        }
+                      >
+                        無料で相談する →
+                      </div>
+                    </AffiliateCta>
+                  );
+                })}
+              </div>
+            </div>
+            <p className="text-xs text-gray-400 mt-3 text-center">
+              本ページはアフィリエイト広告を含みます。掲載順位は報酬額に関わらず独自基準で決定しています。
             </p>
-            <AffiliateCta
-              href={ctaHref}
-              agentName={ctaAgentName}
-              source="article_cta"
-              isExternal={false}
-              className="inline-block rounded-lg px-6 py-2.5 text-sm font-semibold transition-opacity hover:opacity-90"
-              style={{ backgroundColor: '#f59e0b', color: '#1a2744' }}
-            >
-              {ctaButtonLabel}
-            </AffiliateCta>
           </div>
         );
       })()}

@@ -48,7 +48,7 @@ export const metadata: Metadata = {
     url: siteUrl,
     images: [
       {
-        url: `${siteUrl}/images/og-default.jpg`,
+        url: `${siteUrl}/images/og-default.png`,
         width: 1200,
         height: 630,
         alt: '施工管理転職ナビ',
@@ -57,7 +57,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    images: [`${siteUrl}/images/og-default.jpg`],
+    images: [`${siteUrl}/images/og-default.png`],
   },
 };
 
@@ -79,7 +79,7 @@ export default function RootLayout({
               '@type': 'Organization',
               name: '施工管理転職ナビ',
               url: 'https://sekoukan-navi.com',
-              logo: 'https://sekoukan-navi.com/images/og-default.jpg',
+              logo: 'https://sekoukan-navi.com/icon.png',
             }),
           }}
         />

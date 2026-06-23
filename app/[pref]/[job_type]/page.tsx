@@ -64,7 +64,10 @@ export async function generateMetadata({
     openGraph: {
       title,
       description,
-      // og:image は opengraph-image.tsx が自動生成するため個別指定不要
+      // サイト共通の静的OG画像を使用。県×工種ごとの動的OGルート（235本のクロール
+      // 対象URLを生みクロール予算を浪費）は撤去した。childのopenGraphは親のimagesを
+      // 継承せず上書きするため、ここで明示指定する必要がある。
+      images: [{ url: `${siteUrl}/images/og-default.png`, width: 1200, height: 630 }],
     },
   };
 }

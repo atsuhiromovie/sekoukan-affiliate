@@ -1,0 +1,26 @@
+{
+  "_comment": "県×工種ページの index/noindex 判定データの単一ソース。lib/indexability.ts（アプリ）と next-sitemap.config.js（サイトマップ）の両方が参照する。highDemandPrefs は lib/constants.ts の demandLevel:'high' と一致させること。",
+  "highDemandPrefs": [
+    "miyagi",
+    "ibaraki",
+    "tochigi",
+    "gunma",
+    "saitama",
+    "chiba",
+    "tokyo",
+    "kanagawa",
+    "shizuoka",
+    "aichi",
+    "shiga",
+    "kyoto",
+    "osaka",
+    "hyogo",
+    "hiroshima",
+    "fukuoka",
+    "kumamoto"
+  ],
+  "clickWhitelist": [
+    "kagawa/civil",
+    "tottori/civil"
+  ]
+}

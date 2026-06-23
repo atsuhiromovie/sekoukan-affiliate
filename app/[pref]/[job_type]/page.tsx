@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { PREFS, JOB_TYPES, getPrefById, getJobTypeById, getLocalAdvice, getSuccessPoints } from '../../../lib/constants';
+import { isPrefJobIndexable } from '../../../lib/indexability';
 import {
   fetchAffiliatesFromSheets,
   fetchSalaryOverrides,
@@ -52,6 +53,11 @@ export async function generateMetadata({
   return {
     title: { absolute: title },
     description,
+    // 主要市場・クリック実績ページのみ index。薄い量産ページは noindex,follow で
+    // 検索結果から外し、サイト全体の品質シグナルを濃縮する（lib/indexability.ts）。
+    robots: isPrefJobIndexable(params.pref, params.job_type)
+      ? undefined
+      : { index: false, follow: true },
     alternates: {
       canonical: `${siteUrl}/${params.pref}/${params.job_type}/`,
     },

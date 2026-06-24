@@ -343,6 +343,7 @@ export default async function PrefJobTypePage({
                   <li key={j.id}>
                     <Link
                       href={`/${pref.id}/${j.id}/`}
+                      rel={isPrefJobIndexable(pref.id, j.id) ? undefined : 'nofollow'}
                       className="flex items-center gap-2 text-sm text-blue-600 hover:underline"
                     >
                       <span className="text-gray-400">›</span>
@@ -364,6 +365,7 @@ export default async function PrefJobTypePage({
                     <li key={p.id}>
                       <Link
                         href={`/${p.id}/${jobType.id}/`}
+                        rel={isPrefJobIndexable(p.id, jobType.id) ? undefined : 'nofollow'}
                         className="flex items-center gap-2 text-sm text-blue-600 hover:underline"
                       >
                         <span className="text-gray-400">›</span>

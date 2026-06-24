@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { PREFS, JOB_TYPES, getPrefById } from '../../lib/constants';
+import { isPrefJobIndexable } from '../../lib/indexability';
 import { SITE_URL as siteUrl } from '../../lib/config';
 
 // ===== SSG: 47都道府県分のパスを生成 =====
@@ -188,6 +189,9 @@ export default function PrefTopPage({ params }: { params: { pref: string } }) {
               <Link
                 key={job.id}
                 href={`/${pref.id}/${job.id}/`}
+                // noindex対象の薄い量産ページへはクロール予算を割かせない（rel=nofollow）。
+                // ユーザー導線は維持（リンクは機能する）。判定は lib/indexability.ts と単一ソース。
+                rel={isPrefJobIndexable(pref.id, job.id) ? undefined : 'nofollow'}
                 className="group bg-white border border-gray-200 rounded-xl p-5 hover:border-blue-400 hover:shadow-md transition-all"
               >
                 <div className="flex items-start justify-between mb-2">
@@ -225,6 +229,7 @@ export default function PrefTopPage({ params }: { params: { pref: string } }) {
           </p>
           <Link
             href={`/${pref.id}/architecture/`}
+            rel={isPrefJobIndexable(pref.id, 'architecture') ? undefined : 'nofollow'}
             className="inline-block font-bold py-4 px-8 rounded-xl text-lg transition-colors hover:opacity-90"
             style={{ backgroundColor: '#f59e0b', color: '#1a2744' }}
           >

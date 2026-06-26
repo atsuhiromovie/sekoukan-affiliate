@@ -70,6 +70,20 @@ export default function RootLayout({
   return (
     <html lang="ja" className={`${notoSansJP.variable} ${oswald.variable} ${bebas.variable}`}>
       <head>
+        {/* WebSite JSON-LD — 検索結果のサイト名を日本語で明示（Googleのサイト名判定の最優先シグナル） */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'WebSite',
+              name: '施工管理転職ナビ',
+              alternateName: '施工管理転職ナビ｜都道府県×工種別エージェント比較',
+              url: 'https://sekoukan-navi.com',
+              inLanguage: 'ja',
+            }),
+          }}
+        />
         {/* Organization JSON-LD */}
         <script
           type="application/ld+json"

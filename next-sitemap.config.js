@@ -28,6 +28,10 @@ module.exports = {
     if (path.includes('/opengraph-image')) {
       return null;
     }
+    // icon.png / favicon.ico などのアセットルート（HTMLページではない）。サイトマップから除外。
+    if (/\.(png|jpg|jpeg|svg|ico|webp|gif)\/?$/i.test(path)) {
+      return null;
+    }
     if (path === '/') {
       return { loc: path, changefreq: 'daily', priority: 1.0, lastmod: new Date().toISOString() };
     }

@@ -204,6 +204,15 @@ export default async function ArticleDetailPage({
   const processedBody = (() => {
     // 行単位でテーブルブロックを検出し、適切に改行補完する
     const lines = article.body.split('\n');
+
+    // 本文先頭の最初のH1見出し（`# タイトル`）はページ側の<h1>{article.title}</h1>と
+    // 重複するため除去する。先頭の空行はスキップし、最初の非空行が単一`#`見出しのときのみ
+    // その1行だけを取り除く（本文中の`##`/`###`や2つ目以降の`#`には触れない）。
+    const firstContentIdx = lines.findIndex((l) => l.trim() !== '');
+    if (firstContentIdx !== -1 && /^#\s/.test(lines[firstContentIdx])) {
+      lines.splice(firstContentIdx, 1);
+    }
+
     const result: string[] = [];
 
     for (let i = 0; i < lines.length; i++) {

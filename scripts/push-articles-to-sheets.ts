@@ -167,8 +167,15 @@ async function main() {
       if (!isPlaceholder(m.description)) {
         toUpdate.push({ rowNumber, col: 'D', value: m.description, label: 'description' });
       }
+      if (!isPlaceholder(m.title)) {
+        toUpdate.push({ rowNumber, col: 'C', value: m.title, label: 'title' });
+      }
       console.log(`[リライト] 行${rowNumber}  ${m.slug}（id/slug/publishedAtは温存）`);
-      console.log(`        更新: ${m.slug}_rewrite.md → H列 body(${body.length}字)${isPlaceholder(m.description) ? '' : ' + D列 description'}\n`);
+      console.log(
+        `        更新: ${m.slug}_rewrite.md → H列 body(${body.length}字)` +
+          `${isPlaceholder(m.description) ? '' : ' + D列 description'}` +
+          `${isPlaceholder(m.title) ? '' : ' + C列 title'}\n`
+      );
     }
   }
 

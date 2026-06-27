@@ -7,7 +7,6 @@
     "build": "next build",
     "start": "next start",
     "postbuild": "next-sitemap",
-    "gen:article": "tsx scripts/article-generator.ts",
     "gen:favicon": "node scripts/gen-favicon.mjs"
   },
   "dependencies": {

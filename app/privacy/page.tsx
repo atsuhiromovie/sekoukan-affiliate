@@ -15,7 +15,7 @@ export default function PrivacyPage() {
       <section className="mb-8">
         <h2 className="text-lg font-semibold text-gray-800 mb-3">運営者</h2>
         <p className="text-gray-600 leading-relaxed">
-          本サイト「施工管理転職ナビ」は、施工管理転職ナビ編集部が運営しています。
+          本サイト「施工管理転職ナビ」は、スタジオ Four/Frame（代表：よんさん）が運営しています。
         </p>
       </section>
 
@@ -24,7 +24,7 @@ export default function PrivacyPage() {
         <p className="text-gray-600 leading-relaxed mb-4">
           本サイトは、各種アフィリエイトプログラムに参加しています。
           サイト内に掲載している広告やリンクを経由して商品・サービスのお申し込みが発生した場合、
-          当編集部が報酬を受け取ることがあります。
+          当サイトが報酬を受け取ることがあります。
           なお、広告掲載の有無・報酬額はコンテンツの内容・評価・掲載順位に影響を与えておりません。
         </p>
         <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 text-sm text-amber-900 leading-relaxed space-y-2">
@@ -77,11 +77,11 @@ export default function PrivacyPage() {
       <section className="mb-8">
         <h2 className="text-lg font-semibold text-gray-800 mb-3">免責事項</h2>
         <p className="text-gray-600 leading-relaxed">
-          本サイトに掲載している情報は、編集部が調査した時点のものです。
+          本サイトに掲載している情報は、当サイトの調査時点のものです。
           掲載内容の正確性・完全性については万全を期しておりますが、
           実際の情報は各社公式サイトにてご確認ください。
           本サイトの情報を利用したことによって生じたいかなる損害についても、
-          当編集部は一切の責任を負いかねます。
+          当サイトは一切の責任を負いかねます。
         </p>
       </section>
 

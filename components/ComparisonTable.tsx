@@ -187,6 +187,7 @@ export default function ComparisonTable({ affiliates, prefName, jobTypeName }: P
           </h3>
           <p className="text-gray-600 text-sm mb-4">
             転職前に資格取得を目指す方向けの学習サポートサービスです。
+            <span className="text-amber-700 font-semibold">※受講料など費用が利用者負担となる有料サービスを含みます（転職エージェントとは異なります）。</span>
           </p>
           <div className="space-y-4">
             {studySites.map((item) => (

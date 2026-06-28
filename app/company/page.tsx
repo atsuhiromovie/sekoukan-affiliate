@@ -25,7 +25,7 @@ export default function CompanyPage() {
               <th className="bg-gray-50 text-gray-700 font-semibold px-6 py-4 text-left">
                 運営
               </th>
-              <td className="px-6 py-4 text-gray-600">施工管理転職ナビ編集部</td>
+              <td className="px-6 py-4 text-gray-600">スタジオ Four/Frame（代表：よんさん）</td>
             </tr>
             <tr className="border-b border-gray-100">
               <th className="bg-gray-50 text-gray-700 font-semibold px-6 py-4 text-left">

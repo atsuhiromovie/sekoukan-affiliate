@@ -66,6 +66,85 @@ function resolvePlaceholderLinks(body: string, allArticles: Article[]): string {
 }
 
 /**
+ * 現在記事に関連する記事を選定する（クラスタ内部リンク用）。
+ * 同カテゴリを優先し、自分自身を除いて最大 limit 件返す。
+ */
+export function buildRelatedArticles(
+  currentSlug: string,
+  allArticles: Article[],
+  limit = 4
+): Article[] {
+  const current = allArticles.find((a) => a.slug === currentSlug);
+  if (!current) return [];
+  const candidates = allArticles.filter((a) => a.slug !== currentSlug);
+
+  const picked: Article[] = [];
+  const seen = new Set<string>();
+  const add = (a: Article) => {
+    if (!seen.has(a.slug)) {
+      seen.add(a.slug);
+      picked.push(a);
+    }
+  };
+  // 1. 同カテゴリを優先
+  for (const a of candidates) {
+    if (picked.length >= limit) break;
+    if (a.category === current.category) add(a);
+  }
+  // 2. 上限に満たなければ同一工種で補完
+  for (const a of candidates) {
+    if (picked.length >= limit) break;
+    if (a.jobType && a.jobType === current.jobType) add(a);
+  }
+  return picked.slice(0, limit);
+}
+
+/**
+ * 関連記事ブロックをMarkdownで生成する。
+ * 関連記事が無ければ空文字を返す（空の見出しを残さない）。
+ */
+export function renderRelatedArticlesBlock(
+  currentSlug: string,
+  allArticles: Article[],
+  limit = 4
+): string {
+  const related = buildRelatedArticles(currentSlug, allArticles, limit);
+  if (related.length === 0) return '';
+  const items = related.map((a) => `- [${a.title}](/articles/${a.slug}/)`).join('\n');
+  return `\n\n## 関連記事\n\n${items}\n`;
+}
+
+/**
+ * ハブ記事マップ：指名/サービス名KWを、その受け皿となる正規記事へ集約する。
+ * キーワードの共食い（複数ページが同じKWで競合）を解消し、1本に評価を集める。
+ * 長いキーワードを先に並べること（部分一致の取りこぼし防止）。
+ */
+export const HUB_KEYWORDS: { keyword: string; slug: string }[] = [
+  { keyword: '施工管理マイナビエージェント', slug: 'mynavi-agent-sekoukan' },
+  { keyword: 'マイナビエージェント', slug: 'mynavi-agent-sekoukan' },
+];
+
+/**
+ * 本文中のハブKWの「最初の1回」を、対応する正規記事へのリンクに変換する。
+ * ハブ記事自身の中では自己リンクしない。
+ * （既存リンク・コードブロックの保護は呼び出し側パイプラインで実施済みの前提）
+ */
+export function linkHubKeywords(body: string, currentSlug: string): string {
+  // 既に生成したリンクをプレースホルダーで退避し、内側の短いKWが再マッチしないようにする
+  const placeholders: string[] = [];
+  let result = body;
+  for (const { keyword, slug } of HUB_KEYWORDS) {
+    if (slug === currentSlug) continue; // 自己リンク回避
+    const idx = result.indexOf(keyword);
+    if (idx === -1) continue;
+    const token = `__HUBLINK${placeholders.length}__`;
+    placeholders.push(`[${keyword}](/articles/${slug}/)`);
+    result = result.slice(0, idx) + token + result.slice(idx + keyword.length);
+  }
+  return result.replace(/__HUBLINK(\d+)__/g, (_m, i) => placeholders[Number(i)]);
+}
+
+/**
  * 記事本文のMarkdownに内部リンクを自動挿入する
  * - （※内部リンク：#X記事へ）プレースホルダーを実リンクに変換
  * - 各キーワードは最初の1回のみリンク化
@@ -89,11 +168,19 @@ export function addInternalLinks(
 
   // 2. 既存のMarkdownリンクをプレースホルダーで保護
   const existingLinks: string[] = [];
-  result = result.replace(/\[([^\]]+)\]\([^)]+\)/g, (match) => {
-    const idx = existingLinks.length;
-    existingLinks.push(match);
-    return `__LINK_${idx}__`;
-  });
+  const protectLinks = () => {
+    result = result.replace(/\[([^\]]+)\]\([^)]+\)/g, (match) => {
+      const idx = existingLinks.length;
+      existingLinks.push(match);
+      return `__LINK_${idx}__`;
+    });
+  };
+  protectLinks();
+
+  // 2b. ハブKWをハブ記事へ集約リンク（カニバリ解消）。既存リンクは保護済みなので二重リンクしない。
+  //     生成したハブリンクも再保護し、後続のprocessLineが内部を壊さないようにする。
+  result = linkHubKeywords(result, currentSlug);
+  protectLinks();
 
   // 3. 行単位で処理（テーブル行とヘッダー行はスキップ）
   const usedKeywords = new Set<string>();
@@ -125,6 +212,9 @@ export function addInternalLinks(
   if (TOOL_INJECTIONS[currentSlug]) {
     result += TOOL_INJECTIONS[currentSlug];
   }
+
+  // 6. 記事末尾に関連記事ブロックを付与（クラスタ内部リンク／クロール導線）
+  result += renderRelatedArticlesBlock(currentSlug, allArticles, 4);
 
   return result;
 }
